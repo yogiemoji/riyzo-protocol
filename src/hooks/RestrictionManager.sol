@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import {Auth} from "src/Auth.sol";
+import {Auth} from "src/core/Auth.sol";
 import {IRoot} from "src/interfaces/IRoot.sol";
 import {ITranche} from "src/interfaces/token/ITranche.sol";
 import {IHook, HookData} from "src/interfaces/token/IHook.sol";
-import {MessagesLib} from "src/libraries/MessagesLib.sol";
-import {BitmapLib} from "src/libraries/BitmapLib.sol";
-import {BytesLib} from "src/libraries/BytesLib.sol";
+import {MessagesLib} from "src/core/libraries/MessagesLib.sol";
+import {BitmapLib} from "src/core/libraries/BitmapLib.sol";
+import {BytesLib} from "src/core/libraries/BytesLib.sol";
 import {IERC165} from "src/interfaces/IERC7575.sol";
 import {RestrictionUpdate, IRestrictionManager} from "src/interfaces/token/IRestrictionManager.sol";
 

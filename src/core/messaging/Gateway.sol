@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import {Auth} from "src/Auth.sol";
-import {ArrayLib} from "src/libraries/ArrayLib.sol";
-import {BytesLib} from "src/libraries/BytesLib.sol";
-import {MathLib} from "src/libraries/MathLib.sol";
-import {MessagesLib} from "src/libraries/MessagesLib.sol";
-import {SafeTransferLib} from "src/libraries/SafeTransferLib.sol";
-import {TransientStorage} from "src/libraries/TransientStorage.sol";
+import {Auth} from "src/core/Auth.sol";
+import {ArrayLib} from "src/core/libraries/ArrayLib.sol";
+import {BytesLib} from "src/core/libraries/BytesLib.sol";
+import {MathLib} from "src/core/libraries/MathLib.sol";
+import {MessagesLib} from "src/core/libraries/MessagesLib.sol";
+import {SafeTransferLib} from "src/core/libraries/SafeTransferLib.sol";
+import {TransientStorage} from "src/core/libraries/TransientStorage.sol";
 import {IGateway, IMessageHandler} from "src/interfaces/gateway/IGateway.sol";
 import {IRoot} from "src/interfaces/IRoot.sol";
 import {IGasService} from "src/interfaces/gateway/IGasService.sol";

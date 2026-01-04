@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import {Auth} from "src/Auth.sol";
+import {Auth} from "src/core/Auth.sol";
 import {IRoot} from "src/interfaces/IRoot.sol";
-import {EIP712Lib} from "src/libraries/EIP712Lib.sol";
+import {EIP712Lib} from "src/core/libraries/EIP712Lib.sol";
 import {IRecoverable} from "src/interfaces/IRoot.sol";
 import {ITranche} from "src/interfaces/token/ITranche.sol";
-import {SignatureLib} from "src/libraries/SignatureLib.sol";
-import {SafeTransferLib} from "src/libraries/SafeTransferLib.sol";
+import {SignatureLib} from "src/core/libraries/SignatureLib.sol";
+import {SafeTransferLib} from "src/core/libraries/SafeTransferLib.sol";
 import {IInvestmentManager} from "src/interfaces/IInvestmentManager.sol";
 import "src/interfaces/IERC7540.sol";
 import "src/interfaces/IERC7575.sol";

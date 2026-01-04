@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
 import {ERC7540VaultFactory} from "src/factories/ERC7540VaultFactory.sol";
 import {ITrancheFactory} from "src/interfaces/factories/ITrancheFactory.sol";
 import {ITranche} from "src/interfaces/token/ITranche.sol";
 import {IHook} from "src/interfaces/token/IHook.sol";
 import {IERC20Metadata, IERC20Wrapper} from "src/interfaces/IERC20.sol";
-import {Auth} from "src/Auth.sol";
-import {SafeTransferLib} from "src/libraries/SafeTransferLib.sol";
-import {MathLib} from "src/libraries/MathLib.sol";
-import {MessagesLib} from "src/libraries/MessagesLib.sol";
-import {CastLib} from "src/libraries/CastLib.sol";
+import {Auth} from "src/core/Auth.sol";
+import {SafeTransferLib} from "src/core/libraries/SafeTransferLib.sol";
+import {MathLib} from "src/core/libraries/MathLib.sol";
+import {MessagesLib} from "src/core/libraries/MessagesLib.sol";
+import {CastLib} from "src/core/libraries/CastLib.sol";
 import {
     Pool,
     TrancheDetails,
@@ -20,7 +20,7 @@ import {
     Domain,
     IPoolManager
 } from "src/interfaces/IPoolManager.sol";
-import {BytesLib} from "src/libraries/BytesLib.sol";
+import {BytesLib} from "src/core/libraries/BytesLib.sol";
 import {IEscrow} from "src/interfaces/IEscrow.sol";
 import {IGateway} from "src/interfaces/gateway/IGateway.sol";
 import {IGasService} from "src/interfaces/gateway/IGasService.sol";

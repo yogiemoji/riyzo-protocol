@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import {Auth} from "src/Auth.sol";
-import {MathLib} from "src/libraries/MathLib.sol";
-import {SafeTransferLib} from "src/libraries/SafeTransferLib.sol";
-import {CastLib} from "src/libraries/CastLib.sol";
+import {Auth} from "src/core/Auth.sol";
+import {MathLib} from "src/core/libraries/MathLib.sol";
+import {SafeTransferLib} from "src/core/libraries/SafeTransferLib.sol";
+import {CastLib} from "src/core/libraries/CastLib.sol";
 import {IERC20, IERC20Permit, IERC20Wrapper} from "src/interfaces/IERC20.sol";
 import {IERC7540Vault} from "src/interfaces/IERC7540.sol";
 import {ICentrifugeRouter} from "src/interfaces/ICentrifugeRouter.sol";
@@ -12,7 +12,7 @@ import {IPoolManager, Domain} from "src/interfaces/IPoolManager.sol";
 import {IEscrow} from "src/interfaces/IEscrow.sol";
 import {ITranche} from "src/interfaces/token/ITranche.sol";
 import {IGateway} from "src/interfaces/gateway/IGateway.sol";
-import {TransientStorage} from "src/libraries/TransientStorage.sol";
+import {TransientStorage} from "src/core/libraries/TransientStorage.sol";
 import {IRecoverable} from "src/interfaces/IRoot.sol";
 import {ITransferProxy} from "src/interfaces/factories/ITransferProxy.sol";
 

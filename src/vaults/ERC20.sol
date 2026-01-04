@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import {Auth} from "src/Auth.sol";
-import {EIP712Lib} from "src/libraries/EIP712Lib.sol";
-import {SignatureLib} from "src/libraries/SignatureLib.sol";
+import {Auth} from "src/core/Auth.sol";
+import {EIP712Lib} from "src/core/libraries/EIP712Lib.sol";
+import {SignatureLib} from "src/core/libraries/SignatureLib.sol";
 import {IERC20, IERC20Metadata, IERC20Permit} from "src/interfaces/IERC20.sol";
 
 /// @title  ERC20

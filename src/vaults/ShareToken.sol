@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import {ERC20} from "src/token/ERC20.sol";
+import {ERC20} from "src/vaults/ERC20.sol";
 import {IERC20, IERC20Metadata} from "src/interfaces/IERC20.sol";
 import {
     IHook,
@@ -13,7 +13,7 @@ import {
 } from "src/interfaces/token/IHook.sol";
 import {IERC7575Share, IERC165} from "src/interfaces/IERC7575.sol";
 import {ITranche, IERC1404} from "src/interfaces/token/ITranche.sol";
-import {MathLib} from "src/libraries/MathLib.sol";
+import {MathLib} from "src/core/libraries/MathLib.sol";
 
 /// @title  Tranche Token
 /// @notice Extension of ERC20 + ERC1404 for tranche tokens,

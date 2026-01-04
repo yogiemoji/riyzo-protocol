@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import {Auth} from "src/Auth.sol";
-import {MessagesLib} from "src/libraries/MessagesLib.sol";
-import {BytesLib} from "src/libraries/BytesLib.sol";
+import {Auth} from "src/core/Auth.sol";
+import {MessagesLib} from "src/core/libraries/MessagesLib.sol";
+import {BytesLib} from "src/core/libraries/BytesLib.sol";
 import {IRoot, IRecoverable} from "src/interfaces/IRoot.sol";
 import {IAuth} from "src/interfaces/IAuth.sol";
 

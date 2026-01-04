@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
 import {
     IAxelarAdapter,
@@ -8,7 +8,7 @@ import {
     IAxelarGasService
 } from "src/interfaces/gateway/adapters/IAxelarAdapter.sol";
 import {IGateway} from "src/interfaces/gateway/IGateway.sol";
-import {Auth} from "src/Auth.sol";
+import {Auth} from "src/core/Auth.sol";
 import {IGateway} from "src/interfaces/gateway/IGateway.sol";
 
 /// @title  Axelar Adapter

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import {Auth} from "src/Auth.sol";
+import {Auth} from "src/core/Auth.sol";
 import {IERC20} from "src/interfaces/IERC20.sol";
-import {MathLib} from "src/libraries/MathLib.sol";
+import {MathLib} from "src/core/libraries/MathLib.sol";
 import {IRecoverable} from "src/interfaces/IRoot.sol";
 import {IPoolManager} from "src/interfaces/IPoolManager.sol";
-import {SafeTransferLib} from "src/libraries/SafeTransferLib.sol";
+import {SafeTransferLib} from "src/core/libraries/SafeTransferLib.sol";
 import {ITransferProxy, ITransferProxyFactory} from "src/interfaces/factories/ITransferProxy.sol";
 
 contract TransferProxy is Auth, ITransferProxy {
