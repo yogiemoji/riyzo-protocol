@@ -9,9 +9,16 @@ import {ITranche} from "src/interfaces/token/ITranche.sol";
 import {SignatureLib} from "src/core/libraries/SignatureLib.sol";
 import {SafeTransferLib} from "src/core/libraries/SafeTransferLib.sol";
 import {IInvestmentManager} from "src/interfaces/IInvestmentManager.sol";
-import "src/interfaces/IERC7540.sol";
-import "src/interfaces/IERC7575.sol";
-import "src/interfaces/IERC20.sol";
+import {
+    IERC7540Vault,
+    IERC7540Operator,
+    IERC7540Deposit,
+    IERC7540Redeem,
+    IERC7540CancelDeposit,
+    IERC7540CancelRedeem
+} from "src/interfaces/IERC7540.sol";
+import {IERC7575} from "src/interfaces/IERC7575.sol";
+import {IERC20, IERC20Metadata} from "src/interfaces/IERC20.sol";
 
 /// @title  ERC7540Vault
 /// @notice Asynchronous Tokenized Vault standard implementation for Centrifuge pools
@@ -51,7 +58,7 @@ contract ERC7540Vault is Auth, IERC7540Vault {
     bytes32 public constant AUTHORIZE_OPERATOR_TYPEHASH =
         keccak256("AuthorizeOperator(address controller,address operator,bool approved,bytes32 nonce,uint256 deadline)");
 
-    /// @inheritdoc IERC7741
+    /// @notice ERC7741 authorization tracking
     mapping(address controller => mapping(bytes32 nonce => bool used)) public authorizations;
 
     /// @inheritdoc IERC7540Operator
@@ -230,14 +237,14 @@ contract ERC7540Vault is Auth, IERC7540Vault {
         emit OperatorSet(owner, msg.sender, approved);
     }
 
-    /// @inheritdoc IERC7741
+    /// @notice Returns the EIP-712 domain separator
     function DOMAIN_SEPARATOR() public view returns (bytes32) {
         return block.chainid == deploymentChainId
             ? _DOMAIN_SEPARATOR
             : EIP712Lib.calculateDomainSeparator(nameHash, versionHash);
     }
 
-    /// @inheritdoc IERC7741
+    /// @notice Authorize an operator via EIP-712 signature
     function authorizeOperator(
         address controller,
         address operator,
@@ -268,19 +275,18 @@ contract ERC7540Vault is Auth, IERC7540Vault {
         success = true;
     }
 
-    /// @inheritdoc IERC7741
+    /// @notice Invalidate a nonce to prevent replay attacks
     function invalidateNonce(bytes32 nonce) external {
         authorizations[msg.sender][nonce] = true;
     }
 
     // --- ERC165 support ---
-    /// @inheritdoc IERC165
+    /// @notice Check if the contract supports an interface
     function supportsInterface(bytes4 interfaceId) external pure override returns (bool) {
         return interfaceId == type(IERC7540Deposit).interfaceId || interfaceId == type(IERC7540Redeem).interfaceId
             || interfaceId == type(IERC7540Operator).interfaceId || interfaceId == type(IERC7540CancelDeposit).interfaceId
-            || interfaceId == type(IERC7540CancelRedeem).interfaceId || interfaceId == type(IERC7575).interfaceId
-            || interfaceId == type(IERC7741).interfaceId || interfaceId == type(IERC7714).interfaceId
-            || interfaceId == type(IERC165).interfaceId;
+            || interfaceId == type(IERC7540CancelRedeem).interfaceId || interfaceId == type(IERC7575).interfaceId;
+            // TODO: Add IERC7741, IERC7714, IERC165 interface checks when interfaces are available
     }
 
     // --- ERC-4626 methods ---
@@ -419,7 +425,7 @@ contract ERC7540Vault is Auth, IERC7540Vault {
         return manager.priceLastUpdated(address(this));
     }
 
-    /// @inheritdoc IERC7714
+    /// @notice Check if an address is permissioned to interact with the vault
     function isPermissioned(address controller) external view returns (bool) {
         return ITranche(share).checkTransferRestriction(address(0), controller, 0);
     }
