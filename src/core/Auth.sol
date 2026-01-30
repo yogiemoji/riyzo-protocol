@@ -17,8 +17,12 @@ abstract contract Auth is IAuth {
 
     /// @dev Check if the msg.sender has permissions
     modifier auth() {
-        require(wards[msg.sender] == 1, "Auth/not-authorized");
+        _auth();
         _;
+    }
+
+    function _auth() internal view {
+        require(wards[msg.sender] == 1, "Auth/not-authorized");
     }
 
     /// @inheritdoc IAuth

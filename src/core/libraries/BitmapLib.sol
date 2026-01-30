@@ -12,7 +12,7 @@ library BitmapLib {
     }
 
     function getBit(uint128 bitmap, uint128 index) internal pure returns (bool) {
-        uint128 bitAtIndex = uint128(bitmap & (1 << index));
+        uint128 bitAtIndex = bitmap & (uint128(1) << index);
         return bitAtIndex != 0;
     }
 }

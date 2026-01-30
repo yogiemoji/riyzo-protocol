@@ -257,7 +257,7 @@ contract PoolManager is Auth, IPoolManager {
         address asset = idToAsset[assetId];
         require(computedAt >= tranche.prices[asset].computedAt, "PoolManager/cannot-set-older-price");
 
-        tranche.prices[asset] = TranchePrice(price, computedAt);
+        tranche.prices[asset] = TranchePrice({price: price, computedAt: computedAt});
         emit PriceUpdate(poolId, trancheId, asset, price, computedAt);
     }
 
@@ -379,9 +379,9 @@ contract PoolManager is Auth, IPoolManager {
 
         // Check whether the ERC20 token is a wrapper
         try IERC20Wrapper(asset).underlying() returns (address) {
-            _vaultToAsset[vault] = VaultAsset(asset, true);
+            _vaultToAsset[vault] = VaultAsset({asset: asset, isWrapper: true});
         } catch {
-            _vaultToAsset[vault] = VaultAsset(asset, false);
+            _vaultToAsset[vault] = VaultAsset({asset: asset, isWrapper: false});
         }
 
         // Link vault to tranche token

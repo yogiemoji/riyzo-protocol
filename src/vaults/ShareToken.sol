@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 
 import {ERC20} from "src/vaults/ERC20.sol";
-import {IERC20, IERC20Metadata} from "src/interfaces/IERC20.sol";
+import {IERC20} from "src/interfaces/IERC20.sol";
 import {
     IHook,
     HookData,
@@ -32,8 +32,12 @@ contract Tranche is ERC20, ITranche {
     constructor(uint8 decimals_) ERC20(decimals_) {}
 
     modifier authOrHook() {
-        require(wards[msg.sender] == 1 || msg.sender == hook, "Tranche/not-authorized");
+        _authOrHook();
         _;
+    }
+
+    function _authOrHook() internal view {
+        require(wards[msg.sender] == 1 || msg.sender == hook, "Tranche/not-authorized");
     }
 
     // --- Administration ---
@@ -107,7 +111,7 @@ contract Tranche is ERC20, ITranche {
     function _onTransfer(address from, address to, uint256 value) internal {
         require(
             hook == address(0)
-                || IHook(hook).onERC20Transfer(from, to, value, HookData(hookDataOf(from), hookDataOf(to)))
+                || IHook(hook).onERC20Transfer(from, to, value, HookData({from: hookDataOf(from), to: hookDataOf(to)}))
                     == IHook.onERC20Transfer.selector,
             "Tranche/restrictions-failed"
         );
@@ -122,8 +126,9 @@ contract Tranche is ERC20, ITranche {
         success = _transferFrom(sender, from, to, value);
         require(
             hook == address(0)
-                || IHook(hook).onERC20AuthTransfer(sender, from, to, value, HookData(hookDataOf(from), hookDataOf(to)))
-                    == IHook.onERC20AuthTransfer.selector,
+                || IHook(hook).onERC20AuthTransfer(
+                    sender, from, to, value, HookData({from: hookDataOf(from), to: hookDataOf(to)})
+                ) == IHook.onERC20AuthTransfer.selector,
             "Tranche/restrictions-failed"
         );
     }
@@ -137,7 +142,7 @@ contract Tranche is ERC20, ITranche {
     /// @inheritdoc IERC1404
     function detectTransferRestriction(address from, address to, uint256 value) public view returns (uint8) {
         if (hook == address(0)) return SUCCESS_CODE_ID;
-        return IHook(hook).checkERC20Transfer(from, to, value, HookData(hookDataOf(from), hookDataOf(to)))
+        return IHook(hook).checkERC20Transfer(from, to, value, HookData({from: hookDataOf(from), to: hookDataOf(to)}))
             ? SUCCESS_CODE_ID
             : ERROR_CODE_ID;
     }

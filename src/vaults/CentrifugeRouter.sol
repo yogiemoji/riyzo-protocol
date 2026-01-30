@@ -46,6 +46,7 @@ contract CentrifugeRouter is Auth, ICentrifugeRouter {
         poolManager = IPoolManager(poolManager_);
     }
 
+    // forge-lint: disable-next-line unwrapped-modifier-logic
     modifier protected() {
         address currentInitiator = INITIATOR_SLOT.tloadAddress();
         if (currentInitiator == address(0)) {

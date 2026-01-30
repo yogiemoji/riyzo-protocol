@@ -21,15 +21,23 @@ contract Guardian is IGuardian {
     }
 
     modifier onlySafe() {
-        require(msg.sender == address(safe), "Guardian/not-the-authorized-safe");
+        _onlySafe();
         _;
     }
 
+    function _onlySafe() internal view {
+        require(msg.sender == address(safe), "Guardian/not-the-authorized-safe");
+    }
+
     modifier onlySafeOrOwner() {
+        _onlySafeOrOwner();
+        _;
+    }
+
+    function _onlySafeOrOwner() internal view {
         require(
             msg.sender == address(safe) || _isSafeOwner(msg.sender), "Guardian/not-the-authorized-safe-or-its-owner"
         );
-        _;
     }
 
     // --- Admin actions ---

@@ -5,7 +5,6 @@ import {Auth} from "src/core/Auth.sol";
 import {IRoot} from "src/interfaces/IRoot.sol";
 import {ITranche} from "src/interfaces/token/ITranche.sol";
 import {IHook, HookData} from "src/interfaces/token/IHook.sol";
-import {MessagesLib} from "src/core/libraries/MessagesLib.sol";
 import {BitmapLib} from "src/core/libraries/BitmapLib.sol";
 import {BytesLib} from "src/core/libraries/BytesLib.sol";
 import {IERC165} from "src/interfaces/IERC7575.sol";

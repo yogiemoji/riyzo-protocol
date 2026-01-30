@@ -39,3 +39,12 @@ base_sepolia = "${BASE_SEPOLIA_RPC_URL}"
 arbitrum = { key = "${ARBISCAN_API_KEY}" }
 ethereum = { key = "${ETHERSCAN_API_KEY}" }
 base = { key = "${BASESCAN_API_KEY}" }
+
+# Lint configuration
+# Suppress style notes that would require significant V2 API refactoring
+[lint]
+exclude_lints = [
+    "screaming-snake-case-immutable",  # V2 API uses lowercase immutables
+    "mixed-case-function",             # DOMAIN_SEPARATOR is EIP-2612 standard
+    "asm-keccak256",                   # Performance note, not critical
+]

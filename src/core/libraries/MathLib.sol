@@ -115,6 +115,7 @@ library MathLib {
         if (value > type(uint8).max) {
             revert("MathLib/uint8-overflow");
         }
+        // forge-lint: disable-next-line unsafe-typecast
         return uint8(value);
     }
 
@@ -123,6 +124,7 @@ library MathLib {
         if (_value > type(uint128).max) {
             revert("MathLib/uint128-overflow");
         } else {
+            // forge-lint: disable-next-line unsafe-typecast
             value = uint128(_value);
         }
     }

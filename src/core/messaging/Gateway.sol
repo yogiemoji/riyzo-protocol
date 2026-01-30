@@ -60,8 +60,12 @@ contract Gateway is Auth, IGateway, IRecoverable {
     }
 
     modifier pauseable() {
-        require(!root.paused(), "Gateway/paused");
+        _pauseable();
         _;
+    }
+
+    function _pauseable() internal view {
+        require(!root.paused(), "Gateway/paused");
     }
 
     receive() external payable {
@@ -90,7 +94,7 @@ contract Gateway is Auth, IGateway, IRecoverable {
                 require(_activeAdapters[addresses[j]].id == 0, "Gateway/no-duplicates-allowed");
 
                 // Ids are assigned sequentially starting at 1
-                _activeAdapters[addresses[j]] = Adapter(j + 1, quorum_, sessionId);
+                _activeAdapters[addresses[j]] = Adapter({id: j + 1, quorum: quorum_, activeSessionId: sessionId});
             }
 
             adapters = addresses;

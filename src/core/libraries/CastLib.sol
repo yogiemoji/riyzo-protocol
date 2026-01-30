@@ -9,6 +9,7 @@ library CastLib {
 
     /// @dev Adds zero padding
     function toBytes32(string memory source) internal pure returns (bytes32) {
+        // forge-lint: disable-next-line unsafe-typecast
         return bytes32(bytes(source));
     }
 
