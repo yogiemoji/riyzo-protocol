@@ -117,12 +117,11 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
     }
 
     /// @inheritdoc IRiyzoSpoke
-    function registerShareClass(
-        uint64 poolId,
-        bytes16 scId,
-        string calldata name,
-        string calldata symbol
-    ) external auth returns (address shareToken) {
+    function registerShareClass(uint64 poolId, bytes16 scId, string calldata name, string calldata symbol)
+        external
+        auth
+        returns (address shareToken)
+    {
         if (!_pools[poolId].exists) revert PoolNotFound(poolId);
         if (_shareClasses[poolId][scId].exists) revert ShareClassAlreadyExists(poolId, scId);
 
@@ -132,13 +131,8 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
         // Register in BalanceSheet
         IBalanceSheet(balanceSheet).setShareToken(poolId, scId, shareToken);
 
-        _shareClasses[poolId][scId] = ShareClassState({
-            exists: true,
-            scId: scId,
-            shareToken: shareToken,
-            latestPrice: 0,
-            priceTimestamp: 0
-        });
+        _shareClasses[poolId][scId] =
+            ShareClassState({exists: true, scId: scId, shareToken: shareToken, latestPrice: 0, priceTimestamp: 0});
 
         emit ShareClassRegistered(poolId, scId, shareToken);
     }
@@ -219,35 +213,22 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
         emit RedeemRequestQueued(poolId, scId, user, shares);
 
         // Build and send message to hub
-        bytes memory message = abi.encodePacked(
-            uint8(MessagesLib.Call.RedeemRequest),
-            poolId,
-            scId,
-            _addressToBytes32(user),
-            shares
-        );
+        bytes memory message =
+            abi.encodePacked(uint8(MessagesLib.Call.RedeemRequest), poolId, scId, _addressToBytes32(user), shares);
         _sendToHub(message);
     }
 
     /// @inheritdoc IRiyzoSpoke
     function queueCancelDeposit(uint64 poolId, bytes16 scId, address user) external {
-        bytes memory message = abi.encodePacked(
-            uint8(MessagesLib.Call.CancelDepositRequest),
-            poolId,
-            scId,
-            _addressToBytes32(user)
-        );
+        bytes memory message =
+            abi.encodePacked(uint8(MessagesLib.Call.CancelDepositRequest), poolId, scId, _addressToBytes32(user));
         _sendToHub(message);
     }
 
     /// @inheritdoc IRiyzoSpoke
     function queueCancelRedeem(uint64 poolId, bytes16 scId, address user) external {
-        bytes memory message = abi.encodePacked(
-            uint8(MessagesLib.Call.CancelRedeemRequest),
-            poolId,
-            scId,
-            _addressToBytes32(user)
-        );
+        bytes memory message =
+            abi.encodePacked(uint8(MessagesLib.Call.CancelRedeemRequest), poolId, scId, _addressToBytes32(user));
         _sendToHub(message);
     }
 
@@ -269,9 +250,7 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
 
         // Forward to SpokeHandler for processing
         // SpokeHandler will call back into RiyzoSpoke for state updates
-        (bool success, bytes memory returnData) = spokeHandler.call(
-            abi.encodeWithSignature("handle(bytes)", message)
-        );
+        (bool success, bytes memory returnData) = spokeHandler.call(abi.encodeWithSignature("handle(bytes)", message));
         require(success, string(returnData));
     }
 
@@ -325,7 +304,13 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
     }
 
     /// @dev Get asset address from vault (placeholder - actual implementation depends on vault interface)
-    function _getAssetFromVault(address /* vault */) internal pure returns (address) {
+    function _getAssetFromVault(
+        address /* vault */
+    )
+        internal
+        pure
+        returns (address)
+    {
         // This would typically call vault.asset() but we simplify for now
         return address(0);
     }

@@ -99,13 +99,7 @@ contract PoolEscrow is Auth, IPoolEscrow {
     }
 
     /// @inheritdoc IPoolEscrow
-    function releaseToUser(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        address user,
-        uint128 amount
-    ) external auth {
+    function releaseToUser(uint64 poolId, bytes16 scId, address asset, address user, uint128 amount) external auth {
         if (amount == 0) revert ZeroAmount();
         if (user == address(0)) revert ZeroAddress();
 
@@ -130,12 +124,7 @@ contract PoolEscrow is Auth, IPoolEscrow {
     // ============================================================
 
     /// @inheritdoc IPoolEscrow
-    function releaseDepositReservation(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        uint128 amount
-    ) external auth {
+    function releaseDepositReservation(uint64 poolId, bytes16 scId, address asset, uint128 amount) external auth {
         if (amount == 0) revert ZeroAmount();
 
         EscrowAccount storage account = _accounts[poolId][scId][asset];
@@ -152,12 +141,7 @@ contract PoolEscrow is Auth, IPoolEscrow {
     }
 
     /// @inheritdoc IPoolEscrow
-    function releaseRedeemReservation(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        uint128 amount
-    ) external auth {
+    function releaseRedeemReservation(uint64 poolId, bytes16 scId, address asset, uint128 amount) external auth {
         if (amount == 0) revert ZeroAmount();
 
         EscrowAccount storage account = _accounts[poolId][scId][asset];
@@ -179,13 +163,7 @@ contract PoolEscrow is Auth, IPoolEscrow {
     // ============================================================
 
     /// @inheritdoc IPoolEscrow
-    function emergencyWithdraw(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        address to,
-        uint128 amount
-    ) external auth {
+    function emergencyWithdraw(uint64 poolId, bytes16 scId, address asset, address to, uint128 amount) external auth {
         if (amount == 0) revert ZeroAmount();
         if (to == address(0)) revert ZeroAddress();
 
@@ -232,47 +210,27 @@ contract PoolEscrow is Auth, IPoolEscrow {
     // ============================================================
 
     /// @inheritdoc IPoolEscrow
-    function availableBalance(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (uint128) {
+    function availableBalance(uint64 poolId, bytes16 scId, address asset) external view returns (uint128) {
         return _accounts[poolId][scId][asset].balance;
     }
 
     /// @inheritdoc IPoolEscrow
-    function pendingDepositBalance(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (uint128) {
+    function pendingDepositBalance(uint64 poolId, bytes16 scId, address asset) external view returns (uint128) {
         return _accounts[poolId][scId][asset].pendingDeposits;
     }
 
     /// @inheritdoc IPoolEscrow
-    function pendingRedeemBalance(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (uint128) {
+    function pendingRedeemBalance(uint64 poolId, bytes16 scId, address asset) external view returns (uint128) {
         return _accounts[poolId][scId][asset].pendingRedeems;
     }
 
     /// @inheritdoc IPoolEscrow
-    function getAccount(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (EscrowAccount memory) {
+    function getAccount(uint64 poolId, bytes16 scId, address asset) external view returns (EscrowAccount memory) {
         return _accounts[poolId][scId][asset];
     }
 
     /// @inheritdoc IPoolEscrow
-    function totalAccountedBalance(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (uint128) {
+    function totalAccountedBalance(uint64 poolId, bytes16 scId, address asset) external view returns (uint128) {
         EscrowAccount storage account = _accounts[poolId][scId][asset];
         return account.balance + account.pendingDeposits + account.pendingRedeems;
     }

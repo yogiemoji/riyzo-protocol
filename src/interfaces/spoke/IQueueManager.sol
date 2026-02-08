@@ -76,13 +76,7 @@ interface IQueueManager {
     event RedeemsQueued(uint64 indexed poolId, bytes16 indexed scId, uint128 shares, uint128 newTotal);
 
     /// @notice Emitted when a sync is performed
-    event Synced(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        uint128 assets,
-        uint128 shares,
-        uint64 timestamp
-    );
+    event Synced(uint64 indexed poolId, bytes16 indexed scId, uint128 assets, uint128 shares, uint64 timestamp);
 
     /// @notice Emitted when force sync is triggered by admin
     event ForceSynced(uint64 indexed poolId, bytes16 indexed scId, address indexed triggeredBy);
@@ -193,10 +187,10 @@ interface IQueueManager {
     /// @param poolIds Array of pool identifiers
     /// @param scIds Array of share class identifiers
     /// @return results Array of booleans indicating sync needs
-    function shouldSyncBatch(
-        uint64[] calldata poolIds,
-        bytes16[] calldata scIds
-    ) external view returns (bool[] memory results);
+    function shouldSyncBatch(uint64[] calldata poolIds, bytes16[] calldata scIds)
+        external
+        view
+        returns (bool[] memory results);
 
     // ============================================================
     // VIEW FUNCTIONS
@@ -206,19 +200,13 @@ interface IQueueManager {
     /// @param poolId Pool identifier
     /// @param scId Share class identifier
     /// @return config The QueueConfig struct
-    function getQueueConfig(
-        uint64 poolId,
-        bytes16 scId
-    ) external view returns (QueueConfig memory config);
+    function getQueueConfig(uint64 poolId, bytes16 scId) external view returns (QueueConfig memory config);
 
     /// @notice Get current queue state
     /// @param poolId Pool identifier
     /// @param scId Share class identifier
     /// @return state The QueueState struct
-    function getQueueState(
-        uint64 poolId,
-        bytes16 scId
-    ) external view returns (QueueState memory state);
+    function getQueueState(uint64 poolId, bytes16 scId) external view returns (QueueState memory state);
 
     /// @notice Get time since last sync
     /// @param poolId Pool identifier

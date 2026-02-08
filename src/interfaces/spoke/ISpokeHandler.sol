@@ -41,20 +41,12 @@ interface ISpokeHandler {
 
     /// @notice Emitted when FulfilledDepositRequest is processed
     event DepositFulfilled(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed user,
-        uint128 assetAmount,
-        uint128 shareAmount
+        uint64 indexed poolId, bytes16 indexed scId, address indexed user, uint128 assetAmount, uint128 shareAmount
     );
 
     /// @notice Emitted when FulfilledRedeemRequest is processed
     event RedeemFulfilled(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed user,
-        uint128 shareAmount,
-        uint128 assetAmount
+        uint64 indexed poolId, bytes16 indexed scId, address indexed user, uint128 shareAmount, uint128 assetAmount
     );
 
     /// @notice Emitted when FulfilledCancelDepositRequest is processed

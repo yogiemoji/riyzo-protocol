@@ -101,7 +101,9 @@ interface IHoldings {
     );
 
     /// @notice Emitted when snapshot state changes
-    event SnapshotSet(uint64 indexed poolId, bytes16 indexed scId, uint16 indexed centrifugeId, bool isSnapshot, uint64 nonce);
+    event SnapshotSet(
+        uint64 indexed poolId, bytes16 indexed scId, uint16 indexed centrifugeId, bool isSnapshot, uint64 nonce
+    );
 
     /// @notice Emitted when valuation method is changed
     event ValuationUpdated(uint64 indexed poolId, bytes16 indexed scId, uint128 indexed assetId, address newValuation);

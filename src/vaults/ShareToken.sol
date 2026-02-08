@@ -126,9 +126,10 @@ contract Tranche is ERC20, ITranche {
         success = _transferFrom(sender, from, to, value);
         require(
             hook == address(0)
-                || IHook(hook).onERC20AuthTransfer(
-                    sender, from, to, value, HookData({from: hookDataOf(from), to: hookDataOf(to)})
-                ) == IHook.onERC20AuthTransfer.selector,
+                || IHook(hook)
+                    .onERC20AuthTransfer(
+                        sender, from, to, value, HookData({from: hookDataOf(from), to: hookDataOf(to)})
+                    ) == IHook.onERC20AuthTransfer.selector,
             "Tranche/restrictions-failed"
         );
     }

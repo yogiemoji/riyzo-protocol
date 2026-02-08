@@ -100,8 +100,7 @@ contract PoolEscrowTest is Test {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IPoolEscrow.InsufficientPendingDeposits.selector,
-                POOL_ID, SC_ID, address(usdc), 1000e6, 500e6
+                IPoolEscrow.InsufficientPendingDeposits.selector, POOL_ID, SC_ID, address(usdc), 1000e6, 500e6
             )
         );
         poolEscrow.confirmDeposit(POOL_ID, SC_ID, address(usdc), 1000e6);
@@ -129,8 +128,7 @@ contract PoolEscrowTest is Test {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IPoolEscrow.InsufficientBalance.selector,
-                POOL_ID, SC_ID, address(usdc), 1000e6, 500e6
+                IPoolEscrow.InsufficientBalance.selector, POOL_ID, SC_ID, address(usdc), 1000e6, 500e6
             )
         );
         poolEscrow.reserveForRedeem(POOL_ID, SC_ID, address(usdc), 1000e6);

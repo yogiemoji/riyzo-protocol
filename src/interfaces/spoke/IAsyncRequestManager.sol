@@ -72,20 +72,10 @@ interface IAsyncRequestManager {
     // ============================================================
 
     /// @notice Emitted when a deposit request is created
-    event DepositRequestCreated(
-        address indexed vault,
-        address indexed user,
-        uint128 assets,
-        uint64 epochId
-    );
+    event DepositRequestCreated(address indexed vault, address indexed user, uint128 assets, uint64 epochId);
 
     /// @notice Emitted when a redeem request is created
-    event RedeemRequestCreated(
-        address indexed vault,
-        address indexed user,
-        uint128 shares,
-        uint64 epochId
-    );
+    event RedeemRequestCreated(address indexed vault, address indexed user, uint128 shares, uint64 epochId);
 
     /// @notice Emitted when a deposit is fulfilled
     event DepositFulfilled(address indexed vault, address indexed user, uint128 shares);
@@ -135,12 +125,7 @@ interface IAsyncRequestManager {
     /// @param user User making the request
     /// @param assets Amount of assets being deposited
     /// @param epochId Current epoch identifier
-    function createDepositRequest(
-        address vault,
-        address user,
-        uint128 assets,
-        uint64 epochId
-    ) external;
+    function createDepositRequest(address vault, address user, uint128 assets, uint64 epochId) external;
 
     /// @notice Create a new redeem request
     /// @dev Called by vault when user requests redemption.
@@ -149,12 +134,7 @@ interface IAsyncRequestManager {
     /// @param user User making the request
     /// @param shares Number of shares to redeem
     /// @param epochId Current epoch identifier
-    function createRedeemRequest(
-        address vault,
-        address user,
-        uint128 shares,
-        uint64 epochId
-    ) external;
+    function createRedeemRequest(address vault, address user, uint128 shares, uint64 epochId) external;
 
     // ============================================================
     // REQUEST FULFILLMENT (from SpokeHandler)
@@ -224,19 +204,13 @@ interface IAsyncRequestManager {
     /// @param vault Vault address
     /// @param user User address
     /// @return request The DepositRequest struct
-    function getDepositRequest(
-        address vault,
-        address user
-    ) external view returns (DepositRequest memory request);
+    function getDepositRequest(address vault, address user) external view returns (DepositRequest memory request);
 
     /// @notice Get redeem request details
     /// @param vault Vault address
     /// @param user User address
     /// @return request The RedeemRequest struct
-    function getRedeemRequest(
-        address vault,
-        address user
-    ) external view returns (RedeemRequest memory request);
+    function getRedeemRequest(address vault, address user) external view returns (RedeemRequest memory request);
 
     /// @notice Get pending deposit amount (ERC-7540 compatibility)
     /// @param vault Vault address

@@ -38,61 +38,30 @@ interface IPoolEscrow {
     // ============================================================
 
     /// @notice Emitted when a deposit is recorded (pending confirmation)
-    event DepositRecorded(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed asset,
-        uint128 amount
-    );
+    event DepositRecorded(uint64 indexed poolId, bytes16 indexed scId, address indexed asset, uint128 amount);
 
     /// @notice Emitted when a deposit is confirmed by hub
-    event DepositConfirmed(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed asset,
-        uint128 amount
-    );
+    event DepositConfirmed(uint64 indexed poolId, bytes16 indexed scId, address indexed asset, uint128 amount);
 
     /// @notice Emitted when assets are reserved for redemption
-    event RedeemReserved(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed asset,
-        uint128 amount
-    );
+    event RedeemReserved(uint64 indexed poolId, bytes16 indexed scId, address indexed asset, uint128 amount);
 
     /// @notice Emitted when assets are released to user
     event ReleasedToUser(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed asset,
-        address user,
-        uint128 amount
+        uint64 indexed poolId, bytes16 indexed scId, address indexed asset, address user, uint128 amount
     );
 
     /// @notice Emitted when deposit reservation is released (cancelled)
     event DepositReservationReleased(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed asset,
-        uint128 amount
+        uint64 indexed poolId, bytes16 indexed scId, address indexed asset, uint128 amount
     );
 
     /// @notice Emitted when redeem reservation is released (cancelled)
-    event RedeemReservationReleased(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed asset,
-        uint128 amount
-    );
+    event RedeemReservationReleased(uint64 indexed poolId, bytes16 indexed scId, address indexed asset, uint128 amount);
 
     /// @notice Emitted on emergency withdrawal
     event EmergencyWithdraw(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed asset,
-        address to,
-        uint128 amount
+        uint64 indexed poolId, bytes16 indexed scId, address indexed asset, address to, uint128 amount
     );
 
     // ============================================================
@@ -164,13 +133,7 @@ interface IPoolEscrow {
     /// @param asset Asset address
     /// @param user Recipient address
     /// @param amount Amount to release
-    function releaseToUser(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        address user,
-        uint128 amount
-    ) external;
+    function releaseToUser(uint64 poolId, bytes16 scId, address asset, address user, uint128 amount) external;
 
     // ============================================================
     // CANCELLATION FLOW
@@ -184,12 +147,7 @@ interface IPoolEscrow {
     /// @param scId Share class identifier
     /// @param asset Asset address
     /// @param amount Amount to release
-    function releaseDepositReservation(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        uint128 amount
-    ) external;
+    function releaseDepositReservation(uint64 poolId, bytes16 scId, address asset, uint128 amount) external;
 
     /// @notice Release redeem reservation (on cancel)
     /// @dev Called when redeem is cancelled.
@@ -199,12 +157,7 @@ interface IPoolEscrow {
     /// @param scId Share class identifier
     /// @param asset Asset address
     /// @param amount Amount to release
-    function releaseRedeemReservation(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        uint128 amount
-    ) external;
+    function releaseRedeemReservation(uint64 poolId, bytes16 scId, address asset, uint128 amount) external;
 
     // ============================================================
     // EMERGENCY
@@ -218,13 +171,7 @@ interface IPoolEscrow {
     /// @param asset Asset address
     /// @param to Recipient address
     /// @param amount Amount to withdraw
-    function emergencyWithdraw(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        address to,
-        uint128 amount
-    ) external;
+    function emergencyWithdraw(uint64 poolId, bytes16 scId, address asset, address to, uint128 amount) external;
 
     // ============================================================
     // VIEW FUNCTIONS
@@ -235,55 +182,35 @@ interface IPoolEscrow {
     /// @param scId Share class identifier
     /// @param asset Asset address
     /// @return balance Available balance
-    function availableBalance(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (uint128 balance);
+    function availableBalance(uint64 poolId, bytes16 scId, address asset) external view returns (uint128 balance);
 
     /// @notice Get pending deposit balance
     /// @param poolId Pool identifier
     /// @param scId Share class identifier
     /// @param asset Asset address
     /// @return balance Pending deposit balance
-    function pendingDepositBalance(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (uint128 balance);
+    function pendingDepositBalance(uint64 poolId, bytes16 scId, address asset) external view returns (uint128 balance);
 
     /// @notice Get pending redeem balance
     /// @param poolId Pool identifier
     /// @param scId Share class identifier
     /// @param asset Asset address
     /// @return balance Pending redeem balance
-    function pendingRedeemBalance(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (uint128 balance);
+    function pendingRedeemBalance(uint64 poolId, bytes16 scId, address asset) external view returns (uint128 balance);
 
     /// @notice Get full escrow account state
     /// @param poolId Pool identifier
     /// @param scId Share class identifier
     /// @param asset Asset address
     /// @return account The EscrowAccount struct
-    function getAccount(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (EscrowAccount memory account);
+    function getAccount(uint64 poolId, bytes16 scId, address asset) external view returns (EscrowAccount memory account);
 
     /// @notice Get total accounted balance (balance + pending)
     /// @param poolId Pool identifier
     /// @param scId Share class identifier
     /// @param asset Asset address
     /// @return total Total accounted balance
-    function totalAccountedBalance(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (uint128 total);
+    function totalAccountedBalance(uint64 poolId, bytes16 scId, address asset) external view returns (uint128 total);
 
     /// @notice Get the global escrow contract address
     /// @return escrow Global Escrow address

@@ -49,12 +49,7 @@ contract AsyncRequestManager is Auth, IAsyncRequestManager {
     // ============================================================
 
     /// @inheritdoc IAsyncRequestManager
-    function createDepositRequest(
-        address vault,
-        address user,
-        uint128 assets,
-        uint64 epochId
-    ) external auth {
+    function createDepositRequest(address vault, address user, uint128 assets, uint64 epochId) external auth {
         if (assets == 0) revert ZeroAmount();
 
         DepositRequest storage request = _depositRequests[vault][user];
@@ -62,23 +57,14 @@ contract AsyncRequestManager is Auth, IAsyncRequestManager {
             revert RequestAlreadyPending(vault, user);
         }
 
-        _depositRequests[vault][user] = DepositRequest({
-            assets: assets,
-            shares: 0,
-            epochId: epochId,
-            state: RequestState.Pending
-        });
+        _depositRequests[vault][user] =
+            DepositRequest({assets: assets, shares: 0, epochId: epochId, state: RequestState.Pending});
 
         emit DepositRequestCreated(vault, user, assets, epochId);
     }
 
     /// @inheritdoc IAsyncRequestManager
-    function createRedeemRequest(
-        address vault,
-        address user,
-        uint128 shares,
-        uint64 epochId
-    ) external auth {
+    function createRedeemRequest(address vault, address user, uint128 shares, uint64 epochId) external auth {
         if (shares == 0) revert ZeroAmount();
 
         RedeemRequest storage request = _redeemRequests[vault][user];
@@ -86,12 +72,8 @@ contract AsyncRequestManager is Auth, IAsyncRequestManager {
             revert RequestAlreadyPending(vault, user);
         }
 
-        _redeemRequests[vault][user] = RedeemRequest({
-            shares: shares,
-            assets: 0,
-            epochId: epochId,
-            state: RequestState.Pending
-        });
+        _redeemRequests[vault][user] =
+            RedeemRequest({shares: shares, assets: 0, epochId: epochId, state: RequestState.Pending});
 
         emit RedeemRequestCreated(vault, user, shares, epochId);
     }
@@ -197,18 +179,12 @@ contract AsyncRequestManager is Auth, IAsyncRequestManager {
     // ============================================================
 
     /// @inheritdoc IAsyncRequestManager
-    function getDepositRequest(
-        address vault,
-        address user
-    ) external view returns (DepositRequest memory) {
+    function getDepositRequest(address vault, address user) external view returns (DepositRequest memory) {
         return _depositRequests[vault][user];
     }
 
     /// @inheritdoc IAsyncRequestManager
-    function getRedeemRequest(
-        address vault,
-        address user
-    ) external view returns (RedeemRequest memory) {
+    function getRedeemRequest(address vault, address user) external view returns (RedeemRequest memory) {
         return _redeemRequests[vault][user];
     }
 

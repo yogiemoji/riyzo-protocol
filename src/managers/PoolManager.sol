@@ -357,6 +357,7 @@ contract PoolManager is Auth, IPoolManager {
         emit DeployTranche(poolId, trancheId, token);
         return token;
     }
+
     // slither-disable-end reentrancy-eth
 
     /// @inheritdoc IPoolManager

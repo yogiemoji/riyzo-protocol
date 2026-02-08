@@ -102,12 +102,10 @@ contract BalanceSheet is Auth, IBalanceSheet {
     // ============================================================
 
     /// @inheritdoc IBalanceSheet
-    function batchIssue(
-        uint64 poolId,
-        bytes16 scId,
-        address[] calldata users,
-        uint128[] calldata shares
-    ) external auth {
+    function batchIssue(uint64 poolId, bytes16 scId, address[] calldata users, uint128[] calldata shares)
+        external
+        auth
+    {
         if (users.length != shares.length) {
             revert ArrayLengthMismatch(users.length, shares.length);
         }
@@ -127,12 +125,10 @@ contract BalanceSheet is Auth, IBalanceSheet {
     }
 
     /// @inheritdoc IBalanceSheet
-    function batchRevoke(
-        uint64 poolId,
-        bytes16 scId,
-        address[] calldata users,
-        uint128[] calldata shares
-    ) external auth {
+    function batchRevoke(uint64 poolId, bytes16 scId, address[] calldata users, uint128[] calldata shares)
+        external
+        auth
+    {
         if (users.length != shares.length) {
             revert ArrayLengthMismatch(users.length, shares.length);
         }
@@ -156,13 +152,7 @@ contract BalanceSheet is Auth, IBalanceSheet {
     // ============================================================
 
     /// @inheritdoc IBalanceSheet
-    function queueIssuance(
-        uint64 poolId,
-        bytes16 scId,
-        address user,
-        uint128 shares,
-        uint64 epochId
-    ) external auth {
+    function queueIssuance(uint64 poolId, bytes16 scId, address user, uint128 shares, uint64 epochId) external auth {
         if (shares == 0) revert ZeroShares();
 
         _issuanceQueue[poolId][scId].push(PendingIssuance({user: user, shares: shares, epochId: epochId}));
@@ -171,13 +161,7 @@ contract BalanceSheet is Auth, IBalanceSheet {
     }
 
     /// @inheritdoc IBalanceSheet
-    function queueRevocation(
-        uint64 poolId,
-        bytes16 scId,
-        address user,
-        uint128 shares,
-        uint64 epochId
-    ) external auth {
+    function queueRevocation(uint64 poolId, bytes16 scId, address user, uint128 shares, uint64 epochId) external auth {
         if (shares == 0) revert ZeroShares();
 
         _revocationQueue[poolId][scId].push(PendingRevocation({user: user, shares: shares, epochId: epochId}));
@@ -186,11 +170,10 @@ contract BalanceSheet is Auth, IBalanceSheet {
     }
 
     /// @inheritdoc IBalanceSheet
-    function processIssuanceQueue(
-        uint64 poolId,
-        bytes16 scId,
-        uint256 maxOperations
-    ) external returns (uint256 processed) {
+    function processIssuanceQueue(uint64 poolId, bytes16 scId, uint256 maxOperations)
+        external
+        returns (uint256 processed)
+    {
         PendingIssuance[] storage queue = _issuanceQueue[poolId][scId];
         uint256 queueLength = queue.length;
         if (queueLength == 0) revert QueueEmpty(poolId, scId);
@@ -225,11 +208,10 @@ contract BalanceSheet is Auth, IBalanceSheet {
     }
 
     /// @inheritdoc IBalanceSheet
-    function processRevocationQueue(
-        uint64 poolId,
-        bytes16 scId,
-        uint256 maxOperations
-    ) external returns (uint256 processed) {
+    function processRevocationQueue(uint64 poolId, bytes16 scId, uint256 maxOperations)
+        external
+        returns (uint256 processed)
+    {
         PendingRevocation[] storage queue = _revocationQueue[poolId][scId];
         uint256 queueLength = queue.length;
         if (queueLength == 0) revert QueueEmpty(poolId, scId);

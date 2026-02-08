@@ -50,38 +50,22 @@ interface IBalanceSheet {
 
     /// @notice Emitted when shares are issued to a user
     event SharesIssued(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed user,
-        uint128 shares,
-        uint64 epochId
+        uint64 indexed poolId, bytes16 indexed scId, address indexed user, uint128 shares, uint64 epochId
     );
 
     /// @notice Emitted when shares are revoked from a user
     event SharesRevoked(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed user,
-        uint128 shares,
-        uint64 epochId
+        uint64 indexed poolId, bytes16 indexed scId, address indexed user, uint128 shares, uint64 epochId
     );
 
     /// @notice Emitted when issuance is queued for batch processing
     event IssuanceQueued(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed user,
-        uint128 shares,
-        uint64 epochId
+        uint64 indexed poolId, bytes16 indexed scId, address indexed user, uint128 shares, uint64 epochId
     );
 
     /// @notice Emitted when revocation is queued for batch processing
     event RevocationQueued(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed user,
-        uint128 shares,
-        uint64 epochId
+        uint64 indexed poolId, bytes16 indexed scId, address indexed user, uint128 shares, uint64 epochId
     );
 
     /// @notice Emitted when a batch of issuances is processed
@@ -155,12 +139,7 @@ interface IBalanceSheet {
     /// @param scId Share class identifier
     /// @param users Array of users to receive shares
     /// @param shares Array of share amounts (must match users length)
-    function batchIssue(
-        uint64 poolId,
-        bytes16 scId,
-        address[] calldata users,
-        uint128[] calldata shares
-    ) external;
+    function batchIssue(uint64 poolId, bytes16 scId, address[] calldata users, uint128[] calldata shares) external;
 
     /// @notice Revoke shares from multiple users in a single transaction
     /// @dev Used for gas-efficient bulk processing.
@@ -169,12 +148,7 @@ interface IBalanceSheet {
     /// @param scId Share class identifier
     /// @param users Array of users whose shares to burn
     /// @param shares Array of share amounts (must match users length)
-    function batchRevoke(
-        uint64 poolId,
-        bytes16 scId,
-        address[] calldata users,
-        uint128[] calldata shares
-    ) external;
+    function batchRevoke(uint64 poolId, bytes16 scId, address[] calldata users, uint128[] calldata shares) external;
 
     // ============================================================
     // QUEUE MANAGEMENT
@@ -188,13 +162,7 @@ interface IBalanceSheet {
     /// @param user User to receive shares
     /// @param shares Number of shares to mint
     /// @param epochId Epoch when fulfilled
-    function queueIssuance(
-        uint64 poolId,
-        bytes16 scId,
-        address user,
-        uint128 shares,
-        uint64 epochId
-    ) external;
+    function queueIssuance(uint64 poolId, bytes16 scId, address user, uint128 shares, uint64 epochId) external;
 
     /// @notice Queue a revocation for later batch processing
     /// @dev Used when immediate processing is not needed.
@@ -204,13 +172,7 @@ interface IBalanceSheet {
     /// @param user User whose shares to burn
     /// @param shares Number of shares to burn
     /// @param epochId Epoch when fulfilled
-    function queueRevocation(
-        uint64 poolId,
-        bytes16 scId,
-        address user,
-        uint128 shares,
-        uint64 epochId
-    ) external;
+    function queueRevocation(uint64 poolId, bytes16 scId, address user, uint128 shares, uint64 epochId) external;
 
     /// @notice Process queued issuances
     /// @dev Processes up to maxOperations from the issuance queue.
@@ -219,11 +181,9 @@ interface IBalanceSheet {
     /// @param scId Share class identifier
     /// @param maxOperations Maximum number of operations to process
     /// @return processed Number of operations actually processed
-    function processIssuanceQueue(
-        uint64 poolId,
-        bytes16 scId,
-        uint256 maxOperations
-    ) external returns (uint256 processed);
+    function processIssuanceQueue(uint64 poolId, bytes16 scId, uint256 maxOperations)
+        external
+        returns (uint256 processed);
 
     /// @notice Process queued revocations
     /// @dev Processes up to maxOperations from the revocation queue.
@@ -232,11 +192,9 @@ interface IBalanceSheet {
     /// @param scId Share class identifier
     /// @param maxOperations Maximum number of operations to process
     /// @return processed Number of operations actually processed
-    function processRevocationQueue(
-        uint64 poolId,
-        bytes16 scId,
-        uint256 maxOperations
-    ) external returns (uint256 processed);
+    function processRevocationQueue(uint64 poolId, bytes16 scId, uint256 maxOperations)
+        external
+        returns (uint256 processed);
 
     // ============================================================
     // VIEW FUNCTIONS

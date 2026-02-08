@@ -49,13 +49,23 @@ contract RestrictionManager is Auth, IRestrictionManager, IHook {
         address, /* to */
         uint256, /* value */
         HookData calldata /* hookData */
-    ) external pure returns (bytes4) {
+    )
+        external
+        pure
+        returns (bytes4)
+    {
         return IHook.onERC20AuthTransfer.selector;
     }
 
     // --- ERC1404 implementation ---
     /// @inheritdoc IHook
-    function checkERC20Transfer(address from, address to, uint256, /* value */ HookData calldata hookData)
+    function checkERC20Transfer(
+        address from,
+        address to,
+        uint256,
+        /* value */
+        HookData calldata hookData
+    )
         public
         view
         returns (bool)

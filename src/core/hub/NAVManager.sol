@@ -272,10 +272,7 @@ contract NAVManager is Auth, INAVManager {
         // For holdings, we use generic accounts that can be aggregated.
         IHoldings.HoldingAccount[] memory accounts = new IHoldings.HoldingAccount[](4);
 
-        accounts[0] = IHoldings.HoldingAccount({
-            accountId: aAccount,
-            accountType: uint8(IAccounting.AccountType.Asset)
-        });
+        accounts[0] = IHoldings.HoldingAccount({accountId: aAccount, accountType: uint8(IAccounting.AccountType.Asset)});
 
         // For equity/gain/loss, we use a "global" account (centrifugeId = 0)
         // In practice, these should be linked to specific network accounts
@@ -324,10 +321,8 @@ contract NAVManager is Auth, INAVManager {
         // ============================================================
         IHoldings.HoldingAccount[] memory accounts = new IHoldings.HoldingAccount[](2);
 
-        accounts[0] = IHoldings.HoldingAccount({
-            accountId: expAccount,
-            accountType: uint8(IAccounting.AccountType.Expense)
-        });
+        accounts[0] =
+            IHoldings.HoldingAccount({accountId: expAccount, accountType: uint8(IAccounting.AccountType.Expense)});
 
         accounts[1] = IHoldings.HoldingAccount({
             accountId: _liabilityAccount(0), // Global liability placeholder

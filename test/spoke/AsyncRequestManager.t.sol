@@ -66,7 +66,8 @@ contract AsyncRequestManagerTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(
                 IAsyncRequestManager.InvalidRequestState.selector,
-                vault, user1,
+                vault,
+                user1,
                 IAsyncRequestManager.RequestState.None,
                 IAsyncRequestManager.RequestState.Pending
             )
@@ -91,7 +92,8 @@ contract AsyncRequestManagerTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(
                 IAsyncRequestManager.InvalidRequestState.selector,
-                vault, user1,
+                vault,
+                user1,
                 IAsyncRequestManager.RequestState.Pending,
                 IAsyncRequestManager.RequestState.Claimable
             )
@@ -114,7 +116,8 @@ contract AsyncRequestManagerTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(
                 IAsyncRequestManager.InvalidRequestState.selector,
-                vault, user1,
+                vault,
+                user1,
                 IAsyncRequestManager.RequestState.Claimable,
                 IAsyncRequestManager.RequestState.Pending
             )

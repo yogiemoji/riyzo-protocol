@@ -124,12 +124,9 @@ interface IRiyzoSpoke {
     /// @param name Human-readable name for the share token
     /// @param symbol Token symbol
     /// @return shareToken Address of deployed ShareToken
-    function registerShareClass(
-        uint64 poolId,
-        bytes16 scId,
-        string calldata name,
-        string calldata symbol
-    ) external returns (address shareToken);
+    function registerShareClass(uint64 poolId, bytes16 scId, string calldata name, string calldata symbol)
+        external
+        returns (address shareToken);
 
     /// @notice Link a vault to a share class for a specific asset
     /// @dev Called when vault is deployed for this pool/shareClass/asset combo.

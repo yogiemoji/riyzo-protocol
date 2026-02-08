@@ -106,9 +106,7 @@ contract NAVManagerTest is Test {
     function test_initializeNetwork_revert_alreadyInitialized() public {
         navManager.initializeNetwork(POOL_ID, ETHEREUM_CHAIN);
 
-        vm.expectRevert(
-            abi.encodeWithSelector(INAVManager.NetworkAlreadyInitialized.selector, POOL_ID, ETHEREUM_CHAIN)
-        );
+        vm.expectRevert(abi.encodeWithSelector(INAVManager.NetworkAlreadyInitialized.selector, POOL_ID, ETHEREUM_CHAIN));
         navManager.initializeNetwork(POOL_ID, ETHEREUM_CHAIN);
     }
 

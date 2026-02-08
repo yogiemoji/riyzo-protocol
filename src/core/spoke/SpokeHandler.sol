@@ -260,8 +260,7 @@ contract SpokeHandler is Auth, ISpokeHandler {
 
     /// @inheritdoc ISpokeHandler
     function supportsMessageType(uint8 messageType) external pure returns (bool) {
-        return messageType == uint8(MessagesLib.Call.AddPool)
-            || messageType == uint8(MessagesLib.Call.AddTranche)
+        return messageType == uint8(MessagesLib.Call.AddPool) || messageType == uint8(MessagesLib.Call.AddTranche)
             || messageType == uint8(MessagesLib.Call.UpdateTranchePrice)
             || messageType == uint8(MessagesLib.Call.FulfilledDepositRequest)
             || messageType == uint8(MessagesLib.Call.FulfilledRedeemRequest)

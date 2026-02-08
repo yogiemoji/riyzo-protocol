@@ -144,7 +144,9 @@ contract SpokeHandlerTest is Test {
     function test_handle_revert_unknownType() public {
         bytes memory message = abi.encodePacked(uint8(MessagesLib.Call.Invalid));
 
-        vm.expectRevert(abi.encodeWithSelector(ISpokeHandler.UnknownMessageType.selector, uint8(MessagesLib.Call.Invalid)));
+        vm.expectRevert(
+            abi.encodeWithSelector(ISpokeHandler.UnknownMessageType.selector, uint8(MessagesLib.Call.Invalid))
+        );
         handler.handle(message);
     }
 
@@ -169,11 +171,8 @@ contract SpokeHandlerTest is Test {
 
     function test_handleAddPool() public {
         // Encode AddPool message: type(1) + poolId(8) + currency(16)
-        bytes memory message = abi.encodePacked(
-            uint8(MessagesLib.Call.AddPool),
-            POOL_ID,
-            bytes16(uint128(uint160(address(usdc))))
-        );
+        bytes memory message =
+            abi.encodePacked(uint8(MessagesLib.Call.AddPool), POOL_ID, bytes16(uint128(uint160(address(usdc)))));
 
         handler.handle(message);
 
@@ -195,13 +194,8 @@ contract SpokeHandlerTest is Test {
         uint64 timestamp = uint64(block.timestamp);
 
         // Encode UpdateTranchePrice message: type(1) + poolId(8) + trancheId(16) + price(16) + timestamp(8)
-        bytes memory message = abi.encodePacked(
-            uint8(MessagesLib.Call.UpdateTranchePrice),
-            POOL_ID,
-            SC_ID,
-            price,
-            timestamp
-        );
+        bytes memory message =
+            abi.encodePacked(uint8(MessagesLib.Call.UpdateTranchePrice), POOL_ID, SC_ID, price, timestamp);
 
         handler.handle(message);
 

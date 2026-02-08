@@ -20,10 +20,7 @@ contract QueueManagerTest is Test {
 
         // Set default config
         IQueueManager.QueueConfig memory config = IQueueManager.QueueConfig({
-            minBatchSize: 1000e6,
-            maxDelay: 1 hours,
-            gasLimit: 500_000,
-            autoSyncEnabled: true
+            minBatchSize: 1000e6, maxDelay: 1 hours, gasLimit: 500_000, autoSyncEnabled: true
         });
         queueManager.setQueueConfig(POOL_ID, SC_ID, config);
     }
@@ -34,10 +31,7 @@ contract QueueManagerTest is Test {
 
     function test_setQueueConfig() public {
         IQueueManager.QueueConfig memory config = IQueueManager.QueueConfig({
-            minBatchSize: 5000e6,
-            maxDelay: 2 hours,
-            gasLimit: 1_000_000,
-            autoSyncEnabled: false
+            minBatchSize: 5000e6, maxDelay: 2 hours, gasLimit: 1_000_000, autoSyncEnabled: false
         });
 
         queueManager.setQueueConfig(POOL_ID, SC_ID, config);
@@ -50,12 +44,8 @@ contract QueueManagerTest is Test {
     }
 
     function test_setQueueConfig_revert_zeroMaxDelay() public {
-        IQueueManager.QueueConfig memory config = IQueueManager.QueueConfig({
-            minBatchSize: 1000e6,
-            maxDelay: 0,
-            gasLimit: 500_000,
-            autoSyncEnabled: true
-        });
+        IQueueManager.QueueConfig memory config =
+            IQueueManager.QueueConfig({minBatchSize: 1000e6, maxDelay: 0, gasLimit: 500_000, autoSyncEnabled: true});
 
         vm.expectRevert(abi.encodeWithSelector(IQueueManager.InvalidConfig.selector, "maxDelay cannot be zero"));
         queueManager.setQueueConfig(POOL_ID, SC_ID, config);
@@ -63,10 +53,7 @@ contract QueueManagerTest is Test {
 
     function test_setQueueConfig_revert_unauthorized() public {
         IQueueManager.QueueConfig memory config = IQueueManager.QueueConfig({
-            minBatchSize: 1000e6,
-            maxDelay: 1 hours,
-            gasLimit: 500_000,
-            autoSyncEnabled: true
+            minBatchSize: 1000e6, maxDelay: 1 hours, gasLimit: 500_000, autoSyncEnabled: true
         });
 
         vm.prank(unauthorized);
@@ -222,10 +209,7 @@ contract QueueManagerTest is Test {
 
         // Setup config for second pool
         IQueueManager.QueueConfig memory config = IQueueManager.QueueConfig({
-            minBatchSize: 1000e6,
-            maxDelay: 1 hours,
-            gasLimit: 500_000,
-            autoSyncEnabled: true
+            minBatchSize: 1000e6, maxDelay: 1 hours, gasLimit: 500_000, autoSyncEnabled: true
         });
         queueManager.setQueueConfig(poolId2, scId2, config);
 

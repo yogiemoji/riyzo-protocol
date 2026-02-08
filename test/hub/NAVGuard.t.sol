@@ -204,9 +204,7 @@ contract NAVGuardTest is Test {
         guard.validatePrice(POOL_ID, scId, 1e18);
 
         // 15% increase (exceeds 10% limit)
-        vm.expectRevert(
-            abi.encodeWithSelector(NAVGuard.PriceChangeExceedsLimit.selector, POOL_ID, scId, 1500, 1000)
-        );
+        vm.expectRevert(abi.encodeWithSelector(NAVGuard.PriceChangeExceedsLimit.selector, POOL_ID, scId, 1500, 1000));
         guard.validatePrice(POOL_ID, scId, 1.15e18);
     }
 

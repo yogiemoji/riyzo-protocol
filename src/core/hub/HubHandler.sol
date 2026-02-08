@@ -151,11 +151,7 @@ contract HubHandler is Auth {
 
     /// @notice Emitted when a redeem request is queued
     event RedeemRequestQueued(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed investor,
-        uint128 shares,
-        uint16 sourceChain
+        uint64 indexed poolId, bytes16 indexed scId, address indexed investor, uint128 shares, uint16 sourceChain
     );
 
     /// @notice Emitted when a deposit request is cancelled

@@ -98,12 +98,11 @@ contract VaultRegistry is Auth, IVaultRegistry {
     // ============================================================
 
     /// @inheritdoc IVaultRegistry
-    function deployVault(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        address shareToken
-    ) external auth returns (address vault) {
+    function deployVault(uint64 poolId, bytes16 scId, address asset, address shareToken)
+        external
+        auth
+        returns (address vault)
+    {
         if (vaultFactory == address(0)) revert FactoryNotSet("vaultFactory");
 
         bytes32 vaultId = _computeVaultId(poolId, scId, asset);
@@ -113,15 +112,8 @@ contract VaultRegistry is Auth, IVaultRegistry {
         address[] memory wards = new address[](1);
         wards[0] = address(this);
 
-        vault = IERC7540VaultFactory(vaultFactory).newVault(
-            poolId,
-            scId,
-            asset,
-            shareToken,
-            escrow,
-            investmentManager,
-            wards
-        );
+        vault = IERC7540VaultFactory(vaultFactory)
+            .newVault(poolId, scId, asset, shareToken, escrow, investmentManager, wards);
 
         // Store metadata
         _vaultInfo[vault] = VaultMetadata({
@@ -142,11 +134,7 @@ contract VaultRegistry is Auth, IVaultRegistry {
     }
 
     /// @inheritdoc IVaultRegistry
-    function computeVaultAddress(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (address) {
+    function computeVaultAddress(uint64 poolId, bytes16 scId, address asset) external view returns (address) {
         bytes32 vaultId = _computeVaultId(poolId, scId, asset);
         return _vaultAddress[vaultId];
     }
@@ -156,13 +144,11 @@ contract VaultRegistry is Auth, IVaultRegistry {
     // ============================================================
 
     /// @inheritdoc IVaultRegistry
-    function deployShareToken(
-        uint64 poolId,
-        bytes16 scId,
-        string calldata name,
-        string calldata symbol,
-        address hook
-    ) external auth returns (address shareToken) {
+    function deployShareToken(uint64 poolId, bytes16 scId, string calldata name, string calldata symbol, address hook)
+        external
+        auth
+        returns (address shareToken)
+    {
         if (trancheFactory == address(0)) revert FactoryNotSet("trancheFactory");
         if (_shareTokens[poolId][scId] != address(0)) revert ShareTokenAlreadyExists(poolId, scId);
 
@@ -239,11 +225,7 @@ contract VaultRegistry is Auth, IVaultRegistry {
     }
 
     /// @inheritdoc IVaultRegistry
-    function getVault(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (address) {
+    function getVault(uint64 poolId, bytes16 scId, address asset) external view returns (address) {
         bytes32 vaultId = _computeVaultId(poolId, scId, asset);
         return _vaultAddress[vaultId];
     }
@@ -254,18 +236,12 @@ contract VaultRegistry is Auth, IVaultRegistry {
     }
 
     /// @inheritdoc IVaultRegistry
-    function getVaultsByShareClass(
-        uint64 poolId,
-        bytes16 scId
-    ) external view returns (address[] memory) {
+    function getVaultsByShareClass(uint64 poolId, bytes16 scId) external view returns (address[] memory) {
         return _shareClassVaults[poolId][scId];
     }
 
     /// @inheritdoc IVaultRegistry
-    function getShareToken(
-        uint64 poolId,
-        bytes16 scId
-    ) external view returns (address) {
+    function getShareToken(uint64 poolId, bytes16 scId) external view returns (address) {
         return _shareTokens[poolId][scId];
     }
 

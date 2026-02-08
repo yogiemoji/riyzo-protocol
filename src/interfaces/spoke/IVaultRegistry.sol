@@ -43,20 +43,12 @@ interface IVaultRegistry {
 
     /// @notice Emitted when a new vault is deployed
     event VaultDeployed(
-        address indexed vault,
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address asset,
-        address shareToken
+        address indexed vault, uint64 indexed poolId, bytes16 indexed scId, address asset, address shareToken
     );
 
     /// @notice Emitted when a share token is deployed
     event ShareTokenDeployed(
-        address indexed shareToken,
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        string name,
-        string symbol
+        address indexed shareToken, uint64 indexed poolId, bytes16 indexed scId, string name, string symbol
     );
 
     /// @notice Emitted when a vault is activated
@@ -112,12 +104,9 @@ interface IVaultRegistry {
     /// @param asset Deposit asset address
     /// @param shareToken Pre-deployed share token address
     /// @return vault Address of deployed vault
-    function deployVault(
-        uint64 poolId,
-        bytes16 scId,
-        address asset,
-        address shareToken
-    ) external returns (address vault);
+    function deployVault(uint64 poolId, bytes16 scId, address asset, address shareToken)
+        external
+        returns (address vault);
 
     /// @notice Compute vault address before deployment
     /// @dev Returns deterministic CREATE2 address.
@@ -126,11 +115,7 @@ interface IVaultRegistry {
     /// @param scId Share class identifier
     /// @param asset Deposit asset address
     /// @return vault Predicted vault address
-    function computeVaultAddress(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (address vault);
+    function computeVaultAddress(uint64 poolId, bytes16 scId, address asset) external view returns (address vault);
 
     // ============================================================
     // SHARE TOKEN DEPLOYMENT
@@ -145,13 +130,9 @@ interface IVaultRegistry {
     /// @param symbol Token symbol (e.g., "rzSR-USDC")
     /// @param hook Transfer restriction hook address
     /// @return shareToken Address of deployed ShareToken
-    function deployShareToken(
-        uint64 poolId,
-        bytes16 scId,
-        string calldata name,
-        string calldata symbol,
-        address hook
-    ) external returns (address shareToken);
+    function deployShareToken(uint64 poolId, bytes16 scId, string calldata name, string calldata symbol, address hook)
+        external
+        returns (address shareToken);
 
     // ============================================================
     // VAULT LIFECYCLE
@@ -194,11 +175,7 @@ interface IVaultRegistry {
     /// @param scId Share class identifier
     /// @param asset Deposit asset address
     /// @return vault Vault address (zero if not deployed)
-    function getVault(
-        uint64 poolId,
-        bytes16 scId,
-        address asset
-    ) external view returns (address vault);
+    function getVault(uint64 poolId, bytes16 scId, address asset) external view returns (address vault);
 
     /// @notice Get all vaults for a pool
     /// @param poolId Pool identifier
@@ -209,19 +186,13 @@ interface IVaultRegistry {
     /// @param poolId Pool identifier
     /// @param scId Share class identifier
     /// @return vaults Array of vault addresses
-    function getVaultsByShareClass(
-        uint64 poolId,
-        bytes16 scId
-    ) external view returns (address[] memory vaults);
+    function getVaultsByShareClass(uint64 poolId, bytes16 scId) external view returns (address[] memory vaults);
 
     /// @notice Get share token for a share class
     /// @param poolId Pool identifier
     /// @param scId Share class identifier
     /// @return shareToken Share token address
-    function getShareToken(
-        uint64 poolId,
-        bytes16 scId
-    ) external view returns (address shareToken);
+    function getShareToken(uint64 poolId, bytes16 scId) external view returns (address shareToken);
 
     /// @notice Get count of all deployed vaults
     /// @return count Total number of vaults

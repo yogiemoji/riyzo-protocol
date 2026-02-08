@@ -83,12 +83,12 @@ contract BatchRequestManager is Auth {
 
     /// @notice Summary of batch processing results
     struct BatchSummary {
-        uint128 totalDeposited;      // Total assets deposited
-        uint128 totalSharesIssued;   // Total shares created for deposits
+        uint128 totalDeposited; // Total assets deposited
+        uint128 totalSharesIssued; // Total shares created for deposits
         uint128 totalSharesRedeemed; // Total shares redeemed
         uint128 totalAssetsReturned; // Total assets returned for redemptions
-        uint64 epochId;              // Epoch this batch was processed in
-        uint64 processedAt;          // Timestamp of processing
+        uint64 epochId; // Epoch this batch was processed in
+        uint64 processedAt; // Timestamp of processing
     }
 
     /// @notice Represents a fulfilled deposit
@@ -122,11 +122,7 @@ contract BatchRequestManager is Auth {
 
     /// @notice Emitted when a deposit is fulfilled
     event DepositFulfilled(
-        uint64 indexed poolId,
-        bytes16 indexed scId,
-        address indexed investor,
-        uint128 assetAmount,
-        uint128 sharesIssued
+        uint64 indexed poolId, bytes16 indexed scId, address indexed investor, uint128 assetAmount, uint128 sharesIssued
     );
 
     /// @notice Emitted when a redemption is fulfilled
@@ -389,11 +385,7 @@ contract BatchRequestManager is Auth {
     // ============================================================
 
     /// @notice Get the batch summary for a specific epoch
-    function getBatchSummary(uint64 poolId, bytes16 scId, uint64 epochId)
-        external
-        view
-        returns (BatchSummary memory)
-    {
+    function getBatchSummary(uint64 poolId, bytes16 scId, uint64 epochId) external view returns (BatchSummary memory) {
         return batchSummaries[poolId][scId][epochId];
     }
 

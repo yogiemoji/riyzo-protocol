@@ -56,7 +56,14 @@ contract InvestmentManager is Auth, IInvestmentManager {
 
     // --- Outgoing message handling ---
     /// @inheritdoc IInvestmentManager
-    function requestDeposit(address vault, uint256 assets, address controller, address, /* owner */ address source)
+    function requestDeposit(
+        address vault,
+        uint256 assets,
+        address controller,
+        address,
+        /* owner */
+        address source
+    )
         public
         auth
         returns (bool)
@@ -94,7 +101,14 @@ contract InvestmentManager is Auth, IInvestmentManager {
     }
 
     /// @inheritdoc IInvestmentManager
-    function requestRedeem(address vault, uint256 shares, address controller, /* owner */ address, address source)
+    function requestRedeem(
+        address vault,
+        uint256 shares,
+        address controller,
+        /* owner */
+        address,
+        address source
+    )
         public
         auth
         returns (bool)
@@ -357,9 +371,8 @@ contract InvestmentManager is Auth, IInvestmentManager {
         // from user to escrow (lock tranche tokens in escrow)
         if (tokensToTransfer != 0) {
             require(
-                ITranche(address(IERC7540Vault(vault).share())).authTransferFrom(
-                    user, user, address(escrow), tokensToTransfer
-                ),
+                ITranche(address(IERC7540Vault(vault).share()))
+                    .authTransferFrom(user, user, address(escrow), tokensToTransfer),
                 "InvestmentManager/transfer-failed"
             );
         }
@@ -607,9 +620,8 @@ contract InvestmentManager is Auth, IInvestmentManager {
         }
 
         (uint8 assetDecimals, uint8 shareDecimals) = _getPoolDecimals(vault);
-        return _toPriceDecimals(assets, assetDecimals).mulDiv(
-            10 ** PRICE_DECIMALS, _toPriceDecimals(shares, shareDecimals), MathLib.Rounding.Down
-        );
+        return _toPriceDecimals(assets, assetDecimals)
+            .mulDiv(10 ** PRICE_DECIMALS, _toPriceDecimals(shares, shareDecimals), MathLib.Rounding.Down);
     }
 
     /// @dev    When converting assets to shares using the price,

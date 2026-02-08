@@ -62,14 +62,7 @@ contract QueueManager is Auth, IQueueManager {
 
         _configs[poolId][scId] = config;
 
-        emit QueueConfigSet(
-            poolId,
-            scId,
-            config.minBatchSize,
-            config.maxDelay,
-            config.gasLimit,
-            config.autoSyncEnabled
-        );
+        emit QueueConfigSet(poolId, scId, config.minBatchSize, config.maxDelay, config.gasLimit, config.autoSyncEnabled);
     }
 
     /// @inheritdoc IQueueManager
@@ -143,10 +136,11 @@ contract QueueManager is Auth, IQueueManager {
     }
 
     /// @inheritdoc IQueueManager
-    function shouldSyncBatch(
-        uint64[] calldata poolIds,
-        bytes16[] calldata scIds
-    ) external view returns (bool[] memory results) {
+    function shouldSyncBatch(uint64[] calldata poolIds, bytes16[] calldata scIds)
+        external
+        view
+        returns (bool[] memory results)
+    {
         require(poolIds.length == scIds.length, "QueueManager/length-mismatch");
 
         results = new bool[](poolIds.length);
@@ -160,18 +154,12 @@ contract QueueManager is Auth, IQueueManager {
     // ============================================================
 
     /// @inheritdoc IQueueManager
-    function getQueueConfig(
-        uint64 poolId,
-        bytes16 scId
-    ) external view returns (QueueConfig memory) {
+    function getQueueConfig(uint64 poolId, bytes16 scId) external view returns (QueueConfig memory) {
         return _configs[poolId][scId];
     }
 
     /// @inheritdoc IQueueManager
-    function getQueueState(
-        uint64 poolId,
-        bytes16 scId
-    ) external view returns (QueueState memory) {
+    function getQueueState(uint64 poolId, bytes16 scId) external view returns (QueueState memory) {
         return _states[poolId][scId];
     }
 

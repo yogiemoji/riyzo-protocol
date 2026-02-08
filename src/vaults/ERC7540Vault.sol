@@ -55,8 +55,9 @@ contract ERC7540Vault is Auth, IERC7540Vault {
     bytes32 private immutable versionHash;
     uint256 public immutable deploymentChainId;
     bytes32 private immutable _DOMAIN_SEPARATOR;
-    bytes32 public constant AUTHORIZE_OPERATOR_TYPEHASH =
-        keccak256("AuthorizeOperator(address controller,address operator,bool approved,bytes32 nonce,uint256 deadline)");
+    bytes32 public constant AUTHORIZE_OPERATOR_TYPEHASH = keccak256(
+        "AuthorizeOperator(address controller,address operator,bool approved,bytes32 nonce,uint256 deadline)"
+    );
 
     /// @notice ERC7741 authorization tracking
     mapping(address controller => mapping(bytes32 nonce => bool used)) public authorizations;
@@ -212,10 +213,7 @@ contract ERC7540Vault is Auth, IERC7540Vault {
     }
 
     /// @inheritdoc IERC7540CancelRedeem
-    function claimCancelRedeemRequest(uint256, address receiver, address controller)
-        external
-        returns (uint256 shares)
-    {
+    function claimCancelRedeemRequest(uint256, address receiver, address controller) external returns (uint256 shares) {
         _validateController(controller);
         shares = manager.claimCancelRedeemRequest(address(this), receiver, controller);
         emit CancelRedeemClaim(receiver, controller, REQUEST_ID, msg.sender, shares);
@@ -284,9 +282,10 @@ contract ERC7540Vault is Auth, IERC7540Vault {
     /// @notice Check if the contract supports an interface
     function supportsInterface(bytes4 interfaceId) external pure override returns (bool) {
         return interfaceId == type(IERC7540Deposit).interfaceId || interfaceId == type(IERC7540Redeem).interfaceId
-            || interfaceId == type(IERC7540Operator).interfaceId || interfaceId == type(IERC7540CancelDeposit).interfaceId
+            || interfaceId == type(IERC7540Operator).interfaceId
+            || interfaceId == type(IERC7540CancelDeposit).interfaceId
             || interfaceId == type(IERC7540CancelRedeem).interfaceId || interfaceId == type(IERC7575).interfaceId;
-            // TODO: Add IERC7741, IERC7714, IERC165 interface checks when interfaces are available
+        // TODO: Add IERC7741, IERC7714, IERC165 interface checks when interfaces are available
     }
 
     // --- ERC-4626 methods ---
