@@ -171,11 +171,7 @@ contract CentrifugeRouter is Auth, ICentrifugeRouter {
     }
 
     /// @inheritdoc ICentrifugeRouter
-    function claimCancelDepositRequest(address vault, address receiver, address controller)
-        external
-        payable
-        protected
-    {
+    function claimCancelDepositRequest(address vault, address receiver, address controller) external payable protected {
         _canClaim(vault, receiver, controller);
         IERC7540Vault(vault).claimCancelDepositRequest(REQUEST_ID, receiver, controller);
     }
@@ -263,9 +259,10 @@ contract CentrifugeRouter is Auth, ICentrifugeRouter {
         SafeTransferLib.safeTransferFrom(IERC7540Vault(vault).share(), msg.sender, address(this), amount);
         _approveMax(IERC7540Vault(vault).share(), address(poolManager));
         _pay(topUpAmount);
-        IPoolManager(poolManager).transferTrancheTokens(
-            IERC7540Vault(vault).poolId(), IERC7540Vault(vault).trancheId(), domain, chainId, recipient, amount
-        );
+        IPoolManager(poolManager)
+            .transferTrancheTokens(
+                IERC7540Vault(vault).poolId(), IERC7540Vault(vault).trancheId(), domain, chainId, recipient, amount
+            );
     }
 
     /// @inheritdoc ICentrifugeRouter

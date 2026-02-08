@@ -357,7 +357,11 @@ contract Holdings is Auth, IHoldings {
     ///
     /// @return isPositive True if value increased (gain)
     /// @return diff Absolute value of the change
-    function update(uint64 poolId, bytes16 scId, uint128 assetId) external auth returns (bool isPositive, uint128 diff) {
+    function update(uint64 poolId, bytes16 scId, uint128 assetId)
+        external
+        auth
+        returns (bool isPositive, uint128 diff)
+    {
         // ============================================================
         // STEP 1: Verify holding is initialized
         // ============================================================
@@ -421,7 +425,10 @@ contract Holdings is Auth, IHoldings {
     /// This tells the system it's safe to use prices for this share class.
     ///
     /// The nonce increments each time sync completes, preventing replay attacks.
-    function setSnapshot(uint64 poolId, bytes16 scId, uint16 centrifugeId, bool isSnapshot, uint64 nonce) external auth {
+    function setSnapshot(uint64 poolId, bytes16 scId, uint16 centrifugeId, bool isSnapshot, uint64 nonce)
+        external
+        auth
+    {
         Snapshot storage snapshot = _snapshots[poolId][scId][centrifugeId];
         snapshot.isSnapshot = isSnapshot;
         snapshot.nonce = nonce;

@@ -493,10 +493,7 @@ contract RiyzoHub is Auth, IRiyzoHub {
     /// 3. Sends via Gateway to each target chain
     ///
     /// Message format: UpdateTranchePrice(poolId, scId, currencyId, price, computedAt)
-    function broadcastPrice(uint64 poolId, bytes16 scId, uint16[] calldata centrifugeIds)
-        external
-        onlyManager(poolId)
-    {
+    function broadcastPrice(uint64 poolId, bytes16 scId, uint16[] calldata centrifugeIds) external onlyManager(poolId) {
         // Get current price
         (uint128 price, uint64 computedAt) = _shareClassManager.pricePerShare(poolId, scId);
 

@@ -9,7 +9,6 @@ library MathLib {
         Down, // Toward negative infinity
         Up, // Toward infinity
         Zero // Toward zero
-
     }
 
     /// @notice Calculates floor(x * y / denominator) with full precision. Throws if result overflows a uint256 or
@@ -99,6 +98,7 @@ library MathLib {
             return result;
         }
     }
+
     // slither-disable-end divide-before-multiply
 
     /// @notice Calculates x * y / denominator with full precision, following the selected rounding direction.

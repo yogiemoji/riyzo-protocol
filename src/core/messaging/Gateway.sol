@@ -50,9 +50,7 @@ contract Gateway is Auth, IGateway, IRecoverable {
     /// @inheritdoc IGateway
     mapping(address adapter => mapping(bytes32 messageHash => uint256 timestamp)) public recoveries;
 
-    constructor(address root_, address poolManager_, address investmentManager_, address gasService_)
-        Auth(msg.sender)
-    {
+    constructor(address root_, address poolManager_, address investmentManager_, address gasService_) Auth(msg.sender) {
         root = IRoot(root_);
         poolManager = poolManager_;
         investmentManager = investmentManager_;

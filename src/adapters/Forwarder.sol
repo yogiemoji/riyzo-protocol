@@ -58,7 +58,10 @@ contract AxelarForwarder is Auth {
         bytes calldata, //payload,
         string calldata, //tokenSymbol,
         uint256 //amount
-    ) external pure {
+    )
+        external
+        pure
+    {
         revert("AxelarForwarder/execute-with-token-not-supported");
     }
 }

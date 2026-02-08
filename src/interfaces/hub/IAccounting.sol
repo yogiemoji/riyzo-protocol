@@ -44,7 +44,6 @@ interface IAccounting {
         Loss, // Credit-normal: Unrealized depreciation (stored as positive)
         Expense, // Debit-normal: Operating costs, fees paid
         Liability // Credit-normal: Debts, obligations
-
     }
 
     // ============================================================
