@@ -168,15 +168,7 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
     // ============================================================
 
     /// @inheritdoc IRiyzoSpoke
-    function queueDepositRequest(uint64 poolId, bytes16 scId, address user, uint128 amount) external {
-        address vault = _vaults[poolId][scId][msg.sender];
-        if (vault == address(0) && msg.sender != _vaults[poolId][scId][msg.sender]) {
-            // Caller must be a registered vault for this pool/shareClass
-            // Allow direct calls from vaults where msg.sender matches stored vault
-            address expectedVault = _vaults[poolId][scId][_getAssetFromVault(msg.sender)];
-            if (expectedVault != msg.sender) revert Unauthorized(msg.sender);
-        }
-
+    function queueDepositRequest(uint64 poolId, bytes16 scId, address user, uint128 amount) external auth {
         if (!_pools[poolId].isActive) revert PoolNotActive(poolId);
 
         // Record in escrow
@@ -202,7 +194,7 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
     }
 
     /// @inheritdoc IRiyzoSpoke
-    function queueRedeemRequest(uint64 poolId, bytes16 scId, address user, uint128 shares) external {
+    function queueRedeemRequest(uint64 poolId, bytes16 scId, address user, uint128 shares) external auth {
         if (!_pools[poolId].isActive) revert PoolNotActive(poolId);
 
         // Add to queue
@@ -219,14 +211,14 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
     }
 
     /// @inheritdoc IRiyzoSpoke
-    function queueCancelDeposit(uint64 poolId, bytes16 scId, address user) external {
+    function queueCancelDeposit(uint64 poolId, bytes16 scId, address user) external auth {
         bytes memory message =
             abi.encodePacked(uint8(MessagesLib.Call.CancelDepositRequest), poolId, scId, _addressToBytes32(user));
         _sendToHub(message);
     }
 
     /// @inheritdoc IRiyzoSpoke
-    function queueCancelRedeem(uint64 poolId, bytes16 scId, address user) external {
+    function queueCancelRedeem(uint64 poolId, bytes16 scId, address user) external auth {
         bytes memory message =
             abi.encodePacked(uint8(MessagesLib.Call.CancelRedeemRequest), poolId, scId, _addressToBytes32(user));
         _sendToHub(message);
@@ -304,14 +296,4 @@ contract RiyzoSpoke is Auth, IRiyzoSpoke {
     }
 
     /// @dev Get asset address from vault (placeholder - actual implementation depends on vault interface)
-    function _getAssetFromVault(
-        address /* vault */
-    )
-        internal
-        pure
-        returns (address)
-    {
-        // This would typically call vault.asset() but we simplify for now
-        return address(0);
-    }
 }

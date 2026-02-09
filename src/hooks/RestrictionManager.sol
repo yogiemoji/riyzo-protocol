@@ -99,10 +99,29 @@ contract RestrictionManager is Auth, IRestrictionManager, IHook {
     function updateRestriction(address token, bytes memory update) external auth {
         RestrictionUpdate updateId = RestrictionUpdate(update.toUint8(0));
 
-        if (updateId == RestrictionUpdate.UpdateMember) updateMember(token, update.toAddress(1), update.toUint64(33));
-        else if (updateId == RestrictionUpdate.Freeze) freeze(token, update.toAddress(1));
-        else if (updateId == RestrictionUpdate.Unfreeze) unfreeze(token, update.toAddress(1));
-        else revert("RestrictionManager/invalid-update");
+        if (updateId == RestrictionUpdate.UpdateMember) {
+            updateMember(token, update.toAddress(1), update.toUint64(33));
+        } else if (updateId == RestrictionUpdate.Freeze) {
+            freeze(token, update.toAddress(1));
+        } else if (updateId == RestrictionUpdate.Unfreeze) {
+            unfreeze(token, update.toAddress(1));
+        } else if (updateId == RestrictionUpdate.BatchUpdateMember) {
+            _handleBatchUpdateMember(token, update);
+        } else {
+            revert("RestrictionManager/invalid-update");
+        }
+    }
+
+    /// @dev Parse batch update member from encoded bytes: [type(1), count(2), {user(20), validUntil(8)}...]
+    function _handleBatchUpdateMember(address token, bytes memory update) internal {
+        uint16 count = uint16(update.toUint8(1)) << 8 | uint16(update.toUint8(2));
+        uint256 offset = 3;
+        for (uint16 i = 0; i < count; i++) {
+            address user = update.toAddress(offset);
+            uint64 validUntil = update.toUint64(offset + 20);
+            updateMember(token, user, validUntil);
+            offset += 28;
+        }
     }
 
     /// @inheritdoc IRestrictionManager
@@ -140,6 +159,14 @@ contract RestrictionManager is Auth, IRestrictionManager, IHook {
         ITranche(token).setHookData(user, bytes16(hookData));
 
         emit UpdateMember(token, user, validUntil);
+    }
+
+    /// @inheritdoc IRestrictionManager
+    function batchUpdateMember(address token, address[] calldata users, uint64[] calldata validUntils) external auth {
+        require(users.length == validUntils.length, "RestrictionManager/array-length-mismatch");
+        for (uint256 i = 0; i < users.length; i++) {
+            updateMember(token, users[i], validUntils[i]);
+        }
     }
 
     /// @inheritdoc IRestrictionManager

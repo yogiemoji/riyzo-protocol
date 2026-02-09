@@ -5,7 +5,8 @@ enum RestrictionUpdate {
     Invalid,
     UpdateMember,
     Freeze,
-    Unfreeze
+    Unfreeze,
+    BatchUpdateMember
 }
 
 interface IRestrictionManager {
@@ -28,6 +29,12 @@ interface IRestrictionManager {
     /// @notice Add a member. Non-members cannot receive tokens, but can send tokens to valid members
     /// @param  validUntil Timestamp until which the user will be a valid member
     function updateMember(address token, address user, uint64 validUntil) external;
+
+    /// @notice Add multiple members in a single call
+    /// @param  token  The tranche token address
+    /// @param  users  Array of user addresses
+    /// @param  validUntils Array of timestamps until which each user will be a valid member
+    function batchUpdateMember(address token, address[] calldata users, uint64[] calldata validUntils) external;
 
     /// @notice Returns whether the user is a valid member of the token
     function isMember(address token, address user) external view returns (bool isValid, uint64 validUntil);

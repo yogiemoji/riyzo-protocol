@@ -7,6 +7,9 @@ import {IRiyzoSpoke} from "src/interfaces/spoke/IRiyzoSpoke.sol";
 import {IBalanceSheet} from "src/interfaces/spoke/IBalanceSheet.sol";
 import {IPoolEscrow} from "src/interfaces/spoke/IPoolEscrow.sol";
 import {IAsyncRequestManager} from "src/interfaces/spoke/IAsyncRequestManager.sol";
+import {IInvestmentManager} from "src/interfaces/IInvestmentManager.sol";
+import {IHook} from "src/interfaces/token/IHook.sol";
+import {ITranche} from "src/interfaces/token/ITranche.sol";
 import {MessagesLib} from "src/core/libraries/MessagesLib.sol";
 import {BytesLib} from "src/core/libraries/BytesLib.sol";
 
@@ -27,6 +30,7 @@ import {BytesLib} from "src/core/libraries/BytesLib.sol";
 /// | AddPool                       | 10  | Register pool on spoke        |
 /// | AddTranche                    | 11  | Register share class          |
 /// | UpdateTranchePrice            | 14  | Update share class price      |
+/// | UpdateRestriction              | 19  | Update transfer restrictions   |
 /// | FulfilledDepositRequest       | 22  | Issue shares to user          |
 /// | FulfilledRedeemRequest        | 23  | Release assets to user        |
 /// | FulfilledCancelDepositRequest | 26  | Return deposit to user        |
@@ -53,6 +57,12 @@ contract SpokeHandler is Auth, ISpokeHandler {
     /// @notice AsyncRequestManager contract address
     address public asyncRequestManager;
 
+    /// @notice SpokeInvestmentManager contract address
+    address public spokeInvestmentManager;
+
+    /// @notice RestrictionManager contract address
+    address public restrictionManager;
+
     // ============================================================
     // CONSTRUCTOR
     // ============================================================
@@ -73,6 +83,8 @@ contract SpokeHandler is Auth, ISpokeHandler {
         else if (what == "balanceSheet") balanceSheet = data;
         else if (what == "poolEscrow") poolEscrow = data;
         else if (what == "asyncRequestManager") asyncRequestManager = data;
+        else if (what == "spokeInvestmentManager") spokeInvestmentManager = data;
+        else if (what == "restrictionManager") restrictionManager = data;
         else revert("SpokeHandler/file-unrecognized-param");
     }
 
@@ -96,6 +108,8 @@ contract SpokeHandler is Auth, ISpokeHandler {
             success = _handleAddTranche(message);
         } else if (messageType == uint8(MessagesLib.Call.UpdateTranchePrice)) {
             success = _handleUpdatePrice(message);
+        } else if (messageType == uint8(MessagesLib.Call.UpdateRestriction)) {
+            success = _handleUpdateRestriction(message);
         } else if (messageType == uint8(MessagesLib.Call.FulfilledDepositRequest)) {
             success = _handleFulfilledDeposit(message);
         } else if (messageType == uint8(MessagesLib.Call.FulfilledRedeemRequest)) {
@@ -157,26 +171,50 @@ contract SpokeHandler is Auth, ISpokeHandler {
         return true;
     }
 
+    /// @dev Handle UpdateRestriction message
+    /// Message format: [type(1), poolId(8), trancheId(16), update(variable)]
+    function _handleUpdateRestriction(bytes calldata message) internal returns (bool) {
+        uint64 poolId = message.toUint64(1);
+        bytes16 scId = message.toBytes16(9);
+
+        IRiyzoSpoke.ShareClassState memory sc = IRiyzoSpoke(spoke).getShareClass(poolId, scId);
+        require(sc.exists, "SpokeHandler/share-class-not-found");
+
+        address shareToken = sc.shareToken;
+        address hook = ITranche(shareToken).hook();
+        require(hook != address(0), "SpokeHandler/no-hook-set");
+
+        // Pass the restriction update payload (everything after type+poolId+trancheId)
+        bytes memory update = message[25:];
+        IHook(hook).updateRestriction(shareToken, update);
+
+        emit RestrictionUpdated(poolId, scId, shareToken);
+        return true;
+    }
+
     /// @dev Handle FulfilledDepositRequest message
     /// Message format: [type(1), poolId(8), trancheId(16), user(32), assetId(16), assetAmount(16), shareAmount(16)]
     function _handleFulfilledDeposit(bytes calldata message) internal returns (bool) {
         uint64 poolId = message.toUint64(1);
         bytes16 scId = message.toBytes16(9);
         address user = _bytes32ToAddress(message.toBytes32(25));
-        uint128 assetAmount = message.toUint128(57);
-        uint128 shareAmount = message.toUint128(73);
+        uint128 assetId = message.toUint128(57);
+        uint128 assetAmount = message.toUint128(73);
+        uint128 shareAmount = message.toUint128(89);
 
-        // Issue shares to user
-        IBalanceSheet(balanceSheet).issueShares(poolId, scId, user, shareAmount);
-
-        // Confirm deposit in escrow
-        address currency = IRiyzoSpoke(spoke).getPool(poolId).currency;
-        IPoolEscrow(poolEscrow).confirmDeposit(poolId, scId, currency, assetAmount);
-
-        // Update request state
-        address vault = _getVaultForShareClass(poolId, scId, currency);
-        if (vault != address(0) && asyncRequestManager != address(0)) {
-            IAsyncRequestManager(asyncRequestManager).fulfillDeposit(vault, user, shareAmount);
+        if (spokeInvestmentManager != address(0)) {
+            // Delegate to SpokeInvestmentManager for InvestmentState bookkeeping + vault callbacks
+            IInvestmentManager(spokeInvestmentManager)
+                .fulfillDepositRequest(poolId, scId, user, assetId, assetAmount, shareAmount);
+        } else {
+            // Legacy path: direct spoke component calls
+            IBalanceSheet(balanceSheet).issueShares(poolId, scId, user, shareAmount);
+            address currency = IRiyzoSpoke(spoke).getPool(poolId).currency;
+            IPoolEscrow(poolEscrow).confirmDeposit(poolId, scId, currency, assetAmount);
+            address vault = _getVaultForShareClass(poolId, scId, currency);
+            if (vault != address(0) && asyncRequestManager != address(0)) {
+                IAsyncRequestManager(asyncRequestManager).fulfillDeposit(vault, user, shareAmount);
+            }
         }
 
         emit DepositFulfilled(poolId, scId, user, assetAmount, shareAmount);
@@ -189,21 +227,22 @@ contract SpokeHandler is Auth, ISpokeHandler {
         uint64 poolId = message.toUint64(1);
         bytes16 scId = message.toBytes16(9);
         address user = _bytes32ToAddress(message.toBytes32(25));
-        uint128 assetAmount = message.toUint128(57);
-        uint128 shareAmount = message.toUint128(73);
+        uint128 assetId = message.toUint128(57);
+        uint128 assetAmount = message.toUint128(73);
+        uint128 shareAmount = message.toUint128(89);
 
-        // Revoke shares from user
-        IBalanceSheet(balanceSheet).revokeShares(poolId, scId, user, shareAmount);
-
-        // Reserve assets for redemption and release to user
-        address currency = IRiyzoSpoke(spoke).getPool(poolId).currency;
-        IPoolEscrow(poolEscrow).reserveForRedeem(poolId, scId, currency, assetAmount);
-        IPoolEscrow(poolEscrow).releaseToUser(poolId, scId, currency, user, assetAmount);
-
-        // Update request state
-        address vault = _getVaultForShareClass(poolId, scId, currency);
-        if (vault != address(0) && asyncRequestManager != address(0)) {
-            IAsyncRequestManager(asyncRequestManager).fulfillRedeem(vault, user, assetAmount);
+        if (spokeInvestmentManager != address(0)) {
+            IInvestmentManager(spokeInvestmentManager)
+                .fulfillRedeemRequest(poolId, scId, user, assetId, assetAmount, shareAmount);
+        } else {
+            IBalanceSheet(balanceSheet).revokeShares(poolId, scId, user, shareAmount);
+            address currency = IRiyzoSpoke(spoke).getPool(poolId).currency;
+            IPoolEscrow(poolEscrow).reserveForRedeem(poolId, scId, currency, assetAmount);
+            IPoolEscrow(poolEscrow).releaseToUser(poolId, scId, currency, user, assetAmount);
+            address vault = _getVaultForShareClass(poolId, scId, currency);
+            if (vault != address(0) && asyncRequestManager != address(0)) {
+                IAsyncRequestManager(asyncRequestManager).fulfillRedeem(vault, user, assetAmount);
+            }
         }
 
         emit RedeemFulfilled(poolId, scId, user, shareAmount, assetAmount);
@@ -211,21 +250,25 @@ contract SpokeHandler is Auth, ISpokeHandler {
     }
 
     /// @dev Handle FulfilledCancelDepositRequest message
-    /// Message format: [type(1), poolId(8), trancheId(16), user(32), assetId(16), amount(16)]
+    /// Message format: [type(1), poolId(8), trancheId(16), user(32), assetId(16), amount(16), fulfillment(16)]
     function _handleFulfilledCancelDeposit(bytes calldata message) internal returns (bool) {
         uint64 poolId = message.toUint64(1);
         bytes16 scId = message.toBytes16(9);
         address user = _bytes32ToAddress(message.toBytes32(25));
-        uint128 amount = message.toUint128(57);
+        uint128 assetId = message.toUint128(57);
+        uint128 amount = message.toUint128(73);
+        uint128 fulfillment = message.toUint128(89);
 
-        // Release deposit reservation and return to user
-        address currency = IRiyzoSpoke(spoke).getPool(poolId).currency;
-        IPoolEscrow(poolEscrow).releaseDepositReservation(poolId, scId, currency, amount);
-
-        // Update request state
-        address vault = _getVaultForShareClass(poolId, scId, currency);
-        if (vault != address(0) && asyncRequestManager != address(0)) {
-            IAsyncRequestManager(asyncRequestManager).cancelDepositRequest(vault, user);
+        if (spokeInvestmentManager != address(0)) {
+            IInvestmentManager(spokeInvestmentManager)
+                .fulfillCancelDepositRequest(poolId, scId, user, assetId, amount, fulfillment);
+        } else {
+            address currency = IRiyzoSpoke(spoke).getPool(poolId).currency;
+            IPoolEscrow(poolEscrow).releaseDepositReservation(poolId, scId, currency, amount);
+            address vault = _getVaultForShareClass(poolId, scId, currency);
+            if (vault != address(0) && asyncRequestManager != address(0)) {
+                IAsyncRequestManager(asyncRequestManager).cancelDepositRequest(vault, user);
+            }
         }
 
         emit CancelDepositFulfilled(poolId, scId, user, amount);
@@ -233,21 +276,22 @@ contract SpokeHandler is Auth, ISpokeHandler {
     }
 
     /// @dev Handle FulfilledCancelRedeemRequest message
-    /// Message format: [type(1), poolId(8), trancheId(16), user(32), shares(16)]
+    /// Message format: [type(1), poolId(8), trancheId(16), user(32), assetId(16), shares(16)]
     function _handleFulfilledCancelRedeem(bytes calldata message) internal returns (bool) {
         uint64 poolId = message.toUint64(1);
         bytes16 scId = message.toBytes16(9);
         address user = _bytes32ToAddress(message.toBytes32(25));
-        uint128 shares = message.toUint128(57);
+        uint128 assetId = message.toUint128(57);
+        uint128 shares = message.toUint128(73);
 
-        // Return shares to user (they were locked, not burned yet)
-        // The shares were never burned, so we just update state
-
-        // Update request state
-        address currency = IRiyzoSpoke(spoke).getPool(poolId).currency;
-        address vault = _getVaultForShareClass(poolId, scId, currency);
-        if (vault != address(0) && asyncRequestManager != address(0)) {
-            IAsyncRequestManager(asyncRequestManager).cancelRedeemRequest(vault, user);
+        if (spokeInvestmentManager != address(0)) {
+            IInvestmentManager(spokeInvestmentManager).fulfillCancelRedeemRequest(poolId, scId, user, assetId, shares);
+        } else {
+            address currency = IRiyzoSpoke(spoke).getPool(poolId).currency;
+            address vault = _getVaultForShareClass(poolId, scId, currency);
+            if (vault != address(0) && asyncRequestManager != address(0)) {
+                IAsyncRequestManager(asyncRequestManager).cancelRedeemRequest(vault, user);
+            }
         }
 
         emit CancelRedeemFulfilled(poolId, scId, user, shares);
@@ -262,6 +306,7 @@ contract SpokeHandler is Auth, ISpokeHandler {
     function supportsMessageType(uint8 messageType) external pure returns (bool) {
         return messageType == uint8(MessagesLib.Call.AddPool) || messageType == uint8(MessagesLib.Call.AddTranche)
             || messageType == uint8(MessagesLib.Call.UpdateTranchePrice)
+            || messageType == uint8(MessagesLib.Call.UpdateRestriction)
             || messageType == uint8(MessagesLib.Call.FulfilledDepositRequest)
             || messageType == uint8(MessagesLib.Call.FulfilledRedeemRequest)
             || messageType == uint8(MessagesLib.Call.FulfilledCancelDepositRequest)

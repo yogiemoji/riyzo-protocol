@@ -15,9 +15,10 @@ pragma solidity 0.8.28;
 /// MESSAGE TYPES HANDLED:
 /// | Type | ID | Action |
 /// |------|-----|--------|
-/// | AddPool | 9 | Register pool on spoke |
-/// | AddTranche | 12 | Register share class, deploy token |
+/// | AddPool | 10 | Register pool on spoke |
+/// | AddTranche | 11 | Register share class, deploy token |
 /// | UpdateTranchePrice | 14 | Update share class price |
+/// | UpdateRestriction | 19 | Update transfer restrictions |
 /// | FulfilledDepositRequest | 22 | Issue shares to user |
 /// | FulfilledRedeemRequest | 23 | Release assets to user |
 /// | FulfilledCancelDepositRequest | 26 | Return deposit to user |
@@ -54,6 +55,9 @@ interface ISpokeHandler {
 
     /// @notice Emitted when FulfilledCancelRedeemRequest is processed
     event CancelRedeemFulfilled(uint64 indexed poolId, bytes16 indexed scId, address indexed user, uint128 shares);
+
+    /// @notice Emitted when UpdateRestriction is processed
+    event RestrictionUpdated(uint64 indexed poolId, bytes16 indexed scId, address indexed shareToken);
 
     // ============================================================
     // ERRORS
@@ -111,6 +115,14 @@ interface ISpokeHandler {
     /// @notice Get the AsyncRequestManager contract address
     /// @return requestManager AsyncRequestManager address
     function asyncRequestManager() external view returns (address requestManager);
+
+    /// @notice Get the SpokeInvestmentManager contract address
+    /// @return investmentManager SpokeInvestmentManager address
+    function spokeInvestmentManager() external view returns (address investmentManager);
+
+    /// @notice Get the RestrictionManager contract address
+    /// @return manager RestrictionManager address
+    function restrictionManager() external view returns (address manager);
 
     /// @notice Check if a message type is supported
     /// @param messageType Message type ID
