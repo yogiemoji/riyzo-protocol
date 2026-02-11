@@ -61,8 +61,7 @@ contract OracleValuation is Auth, IValuation {
         require(feeders[poolId][msg.sender], "OracleValuation/not-authorized-feeder");
         require(newPrice > 0, "OracleValuation/zero-price");
 
-        priceData[poolId][scId][assetId] =
-            Price({value: newPrice, isValid: true, updatedAt: uint64(block.timestamp)});
+        priceData[poolId][scId][assetId] = Price({value: newPrice, isValid: true, updatedAt: uint64(block.timestamp)});
 
         emit PriceUpdated(poolId, scId, assetId, newPrice);
     }

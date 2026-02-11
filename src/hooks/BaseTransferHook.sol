@@ -49,7 +49,11 @@ abstract contract BaseTransferHook is Auth, IRestrictionManager, IHook {
         address, /* to */
         uint256, /* value */
         HookData calldata /* hookData */
-    ) external pure returns (bytes4) {
+    )
+        external
+        pure
+        returns (bytes4)
+    {
         return IHook.onERC20AuthTransfer.selector;
     }
 

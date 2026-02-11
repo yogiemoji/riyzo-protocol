@@ -30,8 +30,7 @@ contract OpsGuardian is IOpsGuardian {
 
     modifier onlySafeOrOwner() {
         require(
-            msg.sender == address(safe) || _isSafeOwner(msg.sender),
-            "OpsGuardian/not-the-authorized-safe-or-its-owner"
+            msg.sender == address(safe) || _isSafeOwner(msg.sender), "OpsGuardian/not-the-authorized-safe-or-its-owner"
         );
         _;
     }
