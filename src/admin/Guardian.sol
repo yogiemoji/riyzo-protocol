@@ -3,7 +3,6 @@ pragma solidity 0.8.28;
 
 import {Root} from "src/admin/Root.sol";
 import {IGuardian} from "src/interfaces/IGuardian.sol";
-import {IGateway} from "src/interfaces/gateway/IGateway.sol";
 
 interface ISafe {
     function isOwner(address signer) external view returns (bool);
@@ -12,12 +11,10 @@ interface ISafe {
 contract Guardian is IGuardian {
     Root public immutable root;
     ISafe public immutable safe;
-    IGateway public immutable gateway;
 
-    constructor(address safe_, address root_, address gateway_) {
+    constructor(address safe_, address root_) {
         root = Root(root_);
         safe = ISafe(safe_);
-        gateway = IGateway(gateway_);
     }
 
     modifier onlySafe() {
@@ -59,11 +56,6 @@ contract Guardian is IGuardian {
     /// @inheritdoc IGuardian
     function cancelRely(address target) external onlySafe {
         root.cancelRely(target);
-    }
-
-    /// @inheritdoc IGuardian
-    function disputeMessageRecovery(address adapter, bytes32 messageHash) external onlySafe {
-        gateway.disputeMessageRecovery(adapter, messageHash);
     }
 
     // --- Helpers ---

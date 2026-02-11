@@ -336,7 +336,7 @@ contract CentrifugeRouter is Auth, ICentrifugeRouter {
 
     /// @inheritdoc ICentrifugeRouter
     function estimate(bytes calldata payload) external view returns (uint256 amount) {
-        (, amount) = IGateway(gateway).estimate(payload);
+        amount = IGateway(gateway).estimate(payload);
     }
 
     /// @inheritdoc ICentrifugeRouter
