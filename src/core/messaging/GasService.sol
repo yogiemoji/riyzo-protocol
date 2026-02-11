@@ -8,9 +8,9 @@ import {BytesLib} from "src/core/libraries/BytesLib.sol";
 import {MessagesLib} from "src/core/libraries/MessagesLib.sol";
 
 /// @title  GasService
-/// @notice This is a utility contract used in calculations of the
-///         transaction cost for a message / proof being sent across all supported adapters
-///         and executed on Centrifuge Chain.
+/// @notice Utility contract for calculating cross-chain transaction costs.
+///         Used by Gateway to determine gas funding for outgoing messages sent
+///         through the MultiAdapter and bridge adapters.
 contract GasService is IGasService, Auth {
     using MathLib for uint64;
     using MathLib for uint256;
