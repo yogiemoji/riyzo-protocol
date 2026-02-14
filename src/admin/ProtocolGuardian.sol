@@ -2,13 +2,13 @@
 pragma solidity 0.8.28;
 
 import {Root} from "src/admin/Root.sol";
-import {IGuardian} from "src/interfaces/IGuardian.sol";
+import {IProtocolGuardian} from "src/interfaces/IProtocolGuardian.sol";
 
 interface ISafe {
     function isOwner(address signer) external view returns (bool);
 }
 
-contract Guardian is IGuardian {
+contract ProtocolGuardian is IProtocolGuardian {
     Root public immutable root;
     ISafe public immutable safe;
 
@@ -23,7 +23,7 @@ contract Guardian is IGuardian {
     }
 
     function _onlySafe() internal view {
-        require(msg.sender == address(safe), "Guardian/not-the-authorized-safe");
+        require(msg.sender == address(safe), "ProtocolGuardian/not-the-authorized-safe");
     }
 
     modifier onlySafeOrOwner() {
@@ -33,27 +33,28 @@ contract Guardian is IGuardian {
 
     function _onlySafeOrOwner() internal view {
         require(
-            msg.sender == address(safe) || _isSafeOwner(msg.sender), "Guardian/not-the-authorized-safe-or-its-owner"
+            msg.sender == address(safe) || _isSafeOwner(msg.sender),
+            "ProtocolGuardian/not-the-authorized-safe-or-its-owner"
         );
     }
 
     // --- Admin actions ---
-    /// @inheritdoc IGuardian
+    /// @inheritdoc IProtocolGuardian
     function pause() external onlySafeOrOwner {
         root.pause();
     }
 
-    /// @inheritdoc IGuardian
+    /// @inheritdoc IProtocolGuardian
     function unpause() external onlySafe {
         root.unpause();
     }
 
-    /// @inheritdoc IGuardian
+    /// @inheritdoc IProtocolGuardian
     function scheduleRely(address target) external onlySafe {
         root.scheduleRely(target);
     }
 
-    /// @inheritdoc IGuardian
+    /// @inheritdoc IProtocolGuardian
     function cancelRely(address target) external onlySafe {
         root.cancelRely(target);
     }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.28;
+pragma solidity >=0.5.0;
 
-interface IGuardian {
+interface IProtocolGuardian {
     /// @notice Pause the protocol
     /// @dev callable by both safe and owners
     function pause() external;
