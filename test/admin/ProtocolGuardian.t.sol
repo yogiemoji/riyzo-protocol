@@ -6,6 +6,13 @@ import {Root} from "src/admin/Root.sol";
 import {ProtocolGuardian} from "src/admin/ProtocolGuardian.sol";
 import {MockSafe} from "test/mocks/MockSafe.sol";
 
+/// @dev Safe mock that reverts on isOwner to test catch branch
+contract RevertingSafe {
+    function isOwner(address) external pure returns (bool) {
+        revert("boom");
+    }
+}
+
 contract ProtocolGuardianTest is Test {
     Root public root;
     ProtocolGuardian public guardian;
@@ -98,5 +105,17 @@ contract ProtocolGuardianTest is Test {
         vm.prank(safeOwner);
         vm.expectRevert("ProtocolGuardian/not-the-authorized-safe");
         guardian.cancelRely(target);
+    }
+
+    // --- _isSafeOwner catch branch ---
+    function test_pause_revert_whenSafeReverts() public {
+        RevertingSafe badSafe = new RevertingSafe();
+        ProtocolGuardian badGuardian = new ProtocolGuardian(address(badSafe), address(root));
+        root.rely(address(badGuardian));
+
+        // Caller is not the safe itself, and isOwner reverts — catch returns false
+        vm.prank(address(0x77));
+        vm.expectRevert("ProtocolGuardian/not-the-authorized-safe-or-its-owner");
+        badGuardian.pause();
     }
 }

@@ -13,6 +13,13 @@ import {MockSafe} from "test/mocks/MockSafe.sol";
 import {MockERC20} from "test/mocks/MockERC20.sol";
 import {SafeTransferLib} from "src/core/libraries/SafeTransferLib.sol";
 
+/// @dev Safe mock that reverts on isOwner to test catch branch
+contract RevertingSafeForOps {
+    function isOwner(address) external pure returns (bool) {
+        revert("boom");
+    }
+}
+
 /// @dev Simple contract that implements recoverTokens for testing
 contract RecoverableVault {
     mapping(address => uint256) public wards;
@@ -149,5 +156,16 @@ contract OpsGuardianTest is Test {
         vm.prank(safeOwner);
         vm.expectRevert("OpsGuardian/not-the-authorized-safe");
         opsGuardian.recoverTokens(address(0x5), address(0x1), admin, 100);
+    }
+
+    // --- _isSafeOwner catch branch ---
+    function test_pausePool_revert_whenSafeReverts() public {
+        RevertingSafeForOps badSafe = new RevertingSafeForOps();
+        OpsGuardian badOps = new OpsGuardian(address(badSafe), address(root), address(navGuard));
+        navGuard.rely(address(badOps));
+
+        vm.prank(address(0x77));
+        vm.expectRevert("OpsGuardian/not-the-authorized-safe-or-its-owner");
+        badOps.pausePool(POOL_ID);
     }
 }

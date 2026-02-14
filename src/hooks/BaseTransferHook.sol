@@ -128,7 +128,7 @@ abstract contract BaseTransferHook is Auth, IRestrictionManager, IHook {
         require(!root.endorsed(user), "BaseTransferHook/endorsed-user-cannot-be-updated");
 
         uint128 hookData = uint128(validUntil) << 64;
-        hookData.setBit(FREEZE_BIT, isFrozen(token, user));
+        hookData = hookData.setBit(FREEZE_BIT, isFrozen(token, user));
         ITranche(token).setHookData(user, bytes16(hookData));
 
         emit UpdateMember(token, user, validUntil);
